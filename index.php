@@ -1,0 +1,1074 @@
+<?php
+/**
+ * JASS Logistics — PHP + MySQL Backend (Hostinger Ready)
+ * Node.js server is no longer used. All APIs are served by PHP.
+ */
+?>
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JASS Logistics - Global Logistics Solutions</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            blue: '#0f172a', // Dark Navy
+                            yellow: '#f59e0b', // Amber/Gold
+                            light: '#f8fafc',
+                            gray: '#64748b'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    backgroundImage: {
+                        'hero-pattern': "linear-gradient(to bottom, rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.9)), url('https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')",
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Styles for specific visual fidelity */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .service-icon-wrapper {
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover .service-icon-wrapper {
+            background-color: #f59e0b;
+            color: white;
+            transform: translateY(-5px);
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Slider Cross-fade Styles */
+        #hero-section {
+            background-image: none !important;
+            /* Managed by JS */
+        }
+
+        .hero-bg-layer {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            transition: opacity 1.5s ease-in-out, transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 0;
+        }
+
+        .hero-bg-layer::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.9));
+        }
+
+        .hero-bg-layer.fade-out {
+            opacity: 0;
+            transform: scale(1.2);
+        }
+
+        .hero-bg-layer.fade-in {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Scroll to Top Button */
+        #scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(20px);
+        }
+
+        #scroll-to-top.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        #scroll-to-top:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+    <link id="favicon" rel="icon" type="image/x-icon" href="">
+    <base target="_blank">
+</head>
+
+<body class="font-sans text-slate-800 antialiased bg-white">
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-transparent text-white py-4">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-2 group" id="logoLink">
+                <div id="logoText" class="flex items-center gap-2 hidden">
+                    <div
+                        class="w-10 h-10 bg-brand-yellow rounded flex items-center justify-center text-brand-blue font-bold text-xl group-hover:rotate-12 transition-transform">
+                        <i class="fa-solid fa-truck-fast"></i>
+                    </div>
+                    <span class="text-2xl font-bold tracking-wide text-white">JASS<span
+                            class="text-brand-yellow">Logistics</span></span>
+                </div>
+                <img id="logoImg" src="public/logo.png" alt="JASS Logistics" class="h-16">
+            </a>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#services" class="hover:text-brand-yellow transition-colors text-sm font-medium">Services</a>
+                <a href="#about" class="hover:text-brand-yellow transition-colors text-sm font-medium">About</a>
+                <a href="#features" class="hover:text-brand-yellow transition-colors text-sm font-medium">Features</a>
+                <a href="#contact" class="hover:text-brand-yellow transition-colors text-sm font-medium">Contact</a>
+                <a href="#quote"
+                    class="bg-brand-yellow text-brand-blue px-5 py-2 rounded font-semibold hover:bg-yellow-400 transition-colors shadow-lg shadow-yellow-500/20">
+                    Get a Quote
+                </a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-2xl focus:outline-none">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu"
+            class="hidden md:hidden absolute top-full left-0 w-full bg-brand-blue shadow-xl border-t border-slate-700">
+            <div class="flex flex-col p-6 gap-4">
+                <a href="#services" class="hover:text-brand-yellow transition-colors">Services</a>
+                <a href="#about" class="hover:text-brand-yellow transition-colors">About</a>
+                <a href="#features" class="hover:text-brand-yellow transition-colors">Features</a>
+                <a href="#contact" class="hover:text-brand-yellow transition-colors">Contact</a>
+                <a href="#quote" class="text-brand-yellow font-bold">Get a Quote</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="hero-section" class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+        <!-- Background Layers for Cross-fade -->
+        <div id="hero-bg-layer-1" class="hero-bg-layer fade-in"></div>
+        <div id="hero-bg-layer-2" class="hero-bg-layer fade-out"></div>
+
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <!-- Hero Content -->
+            <div id="hero-content" class="max-w-4xl mx-auto animate-fade-in-up">
+                <span id="hero-subtitle"
+                    class="text-brand-yellow font-semibold tracking-wider uppercase text-sm mb-4 block">Global Logistics
+                    Solutions</span>
+                <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+                    <span id="hero-title-line1">Your Trusted Partner for</span> <br>
+                    <span id="hero-title-highlight"
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow to-yellow-200">Global
+                        Logistics Solutions</span>
+                </h1>
+                <p id="hero-description" class="text-slate-300 text-lg mb-8 max-w-2xl mx-auto">
+                    Reliable, cost-effective, and advanced logistics solutions for businesses worldwide.
+                    We connect your cargo to the world through air, ocean, and land transportation.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+                    <button
+                        class="bg-brand-yellow text-brand-blue px-8 py-3 rounded font-bold hover:bg-yellow-400 transition-all shadow-lg shadow-yellow-500/30 flex items-center justify-center gap-2">
+                        Request a Quote <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    <button
+                        class="bg-white/10 backdrop-blur-sm border border-white/30 text-white px-8 py-3 rounded font-semibold hover:bg-white/20 transition-all">
+                        Our Services
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tracking Widget -->
+            <div
+                class="glass-card max-w-3xl mx-auto p-2 rounded-lg shadow-2xl animate-fade-in-up delay-200 transform translate-y-4">
+                <div class="bg-white rounded p-2 flex flex-col md:flex-row items-center gap-2">
+                    <div class="flex-1 w-full relative">
+                        <i
+                            class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" placeholder="Track Shipment (Enter tracking number, container ID, or B/L)"
+                            class="w-full pl-12 pr-4 py-4 rounded bg-gray-50 border-none focus:ring-2 focus:ring-brand-yellow outline-none text-gray-700 placeholder-gray-400">
+                    </div>
+                    <button
+                        class="w-full md:w-auto bg-brand-yellow text-brand-blue px-8 py-4 rounded font-bold hover:bg-yellow-400 transition-colors whitespace-nowrap">
+                        Track Now
+                    </button>
+                </div>
+            </div>
+            <!-- Slider Navigation -->
+            <div class="absolute inset-y-0 left-0 flex items-center pl-4 z-20">
+                <button onclick="prevSlide()"
+                    class="p-4 bg-black/20 hover:bg-black/40 text-white rounded-full transition-all backdrop-blur-sm">
+                    <i class="fa-solid fa-chevron-left text-2xl"></i>
+                </button>
+            </div>
+            <div class="absolute inset-y-0 right-0 flex items-center pr-4 z-20">
+                <button onclick="nextSlide()"
+                    class="p-4 bg-black/20 hover:bg-black/40 text-white rounded-full transition-all backdrop-blur-sm">
+                    <i class="fa-solid fa-chevron-right text-2xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Scroll Down Indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce text-white/50">
+            <i class="fa-solid fa-chevron-down text-2xl"></i>
+        </div>
+    </header>
+
+    <!-- Services Section -->
+    <section id="services" class="py-24 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="text-brand-yellow font-bold tracking-wider uppercase text-xs">What We Offer</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-blue mt-2">Comprehensive Freight Services</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Service 1 -->
+                <div
+                    class="service-card bg-white p-8 rounded-xl shadow-sm border border-gray-100 transition-all duration-300 group cursor-pointer">
+                    <div
+                        class="service-icon-wrapper w-16 h-16 bg-orange-100 text-brand-yellow rounded-full flex items-center justify-center text-2xl mb-6 mx-auto md:mx-0">
+                        <i class="fa-solid fa-ship"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-blue mb-3 text-center md:text-left">Ocean Freight</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed text-center md:text-left">
+                        Cost-effective solutions for heavy cargo and bulk shipments with full container load (FCL) and
+                        less than container load (LCL) options.
+                    </p>
+                </div>
+
+                <!-- Service 2 -->
+                <div
+                    class="service-card bg-white p-8 rounded-xl shadow-sm border border-gray-100 transition-all duration-300 group cursor-pointer">
+                    <div
+                        class="service-icon-wrapper w-16 h-16 bg-orange-100 text-brand-yellow rounded-full flex items-center justify-center text-2xl mb-6 mx-auto md:mx-0">
+                        <i class="fa-solid fa-plane"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-blue mb-3 text-center md:text-left">Air Freight</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed text-center md:text-left">
+                        Fast and reliable air cargo services for time-sensitive shipments. We ensure your goods reach
+                        their destination on schedule.
+                    </p>
+                </div>
+
+                <!-- Service 3 -->
+                <div
+                    class="service-card bg-white p-8 rounded-xl shadow-sm border border-gray-100 transition-all duration-300 group cursor-pointer">
+                    <div
+                        class="service-icon-wrapper w-16 h-16 bg-orange-100 text-brand-yellow rounded-full flex items-center justify-center text-2xl mb-6 mx-auto md:mx-0">
+                        <i class="fa-solid fa-truck"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-blue mb-3 text-center md:text-left">Ground Transport</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed text-center md:text-left">
+                        Seamless door-to-door delivery via our extensive network of trucks and rail partners across
+                        continents.
+                    </p>
+                </div>
+
+                <!-- Service 4 -->
+                <div
+                    class="service-card bg-white p-8 rounded-xl shadow-sm border border-gray-100 transition-all duration-300 group cursor-pointer">
+                    <div
+                        class="service-icon-wrapper w-16 h-16 bg-orange-100 text-brand-yellow rounded-full flex items-center justify-center text-2xl mb-6 mx-auto md:mx-0">
+                        <i class="fa-solid fa-warehouse"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-blue mb-3 text-center md:text-left">Warehousing</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed text-center md:text-left">
+                        Secure storage facilities equipped with modern inventory management systems to keep your goods
+                        safe.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-24 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col items-center mb-12">
+                <span class="text-brand-yellow font-bold tracking-wider uppercase text-xs">About Us</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-blue mt-2">Who We Are</h2>
+            </div>
+
+            <div class="max-w-4xl mx-auto text-center mb-16">
+                <p class="text-gray-600 leading-relaxed mb-6">
+                    We are a leading logistics solutions provider based in the US, dedicated to seamlessly connecting
+                    businesses to global markets. With a robust network, cutting-edge technology, and a customer-first
+                    approach, we specialize in delivering reliable, cost-efficient, and tailored logistics services.
+                </p>
+                <p class="text-gray-600 leading-relaxed">
+                    From air and ocean freight to land transportation, warehousing, customs clearance, and supply chain
+                    consulting, we offer end-to-end solutions designed to meet the unique needs of industries worldwide.
+                    Whether your business is small or large, simple or complex, JASS Logistics is dedicated to meeting
+                    your global logistics requirements with precision and reliability.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                <!-- Mission -->
+                <div
+                    class="bg-gray-50 p-8 rounded-xl border-l-4 border-brand-yellow shadow-sm hover:shadow-md transition-shadow">
+                    <h3 class="text-xl font-bold text-brand-blue mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-bullseye text-brand-yellow"></i> Our Mission
+                    </h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">
+                        At JASS Logistics, our mission is to seamlessly connect businesses to global markets through
+                        innovative, reliable, and efficient logistics solutions. We are dedicated to delivering
+                        excellence in every shipment, ensuring timely delivery, cost optimization, and superior customer
+                        service. By leveraging cutting-edge technology and a vast network of partners, we strive to be
+                        the trusted backbone of global trade, empowering businesses to grow and thrive in a competitive
+                        marketplace.
+                    </p>
+                </div>
+
+                <!-- Vision -->
+                <div
+                    class="bg-gray-50 p-8 rounded-xl border-l-4 border-brand-yellow shadow-sm hover:shadow-md transition-shadow">
+                    <h3 class="text-xl font-bold text-brand-blue mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-eye text-brand-yellow"></i> Our Vision
+                    </h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">
+                        At JASS Logistics, our vision is to be the logistics partner of choice for businesses worldwide.
+                        We aim to set new industry standards by embracing innovation, sustainability, and operational
+                        excellence. Through continuous improvement and customer empowerment, we envision a future where
+                        logistics is seamless, transparent, and accessible to all, driving economic growth and global
+                        interconnectedness.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features & Stats Section (Dark Blue) -->
+    <section id="features" class="py-24 bg-brand-blue text-white relative overflow-hidden">
+        <!-- Decorative background elements -->
+        <div
+            class="absolute top-0 left-0 w-64 h-64 bg-brand-yellow opacity-5 rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2">
+        </div>
+        <div
+            class="absolute bottom-0 right-0 w-96 h-96 bg-blue-500 opacity-5 rounded-full blur-3xl transform translate-x-1/3 translate-y-1/3">
+        </div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-16">
+                <span class="text-brand-yellow font-bold tracking-wider uppercase text-xs">Why Choose Us</span>
+                <h2 class="text-3xl md:text-4xl font-bold mt-2">Built for Reliability</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-20">
+                <!-- Feature 1 -->
+                <div class="text-center group">
+                    <div
+                        class="w-16 h-16 mx-auto bg-slate-800 rounded-full flex items-center justify-center text-brand-yellow text-2xl mb-6 border border-slate-700 group-hover:border-brand-yellow transition-colors">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Fully Insured</h3>
+                    <p class="text-slate-400 text-sm px-4">
+                        Comprehensive insurance coverage for all shipments, ensuring your cargo is protected against
+                        unforeseen circumstances.
+                    </p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="text-center group">
+                    <div
+                        class="w-16 h-16 mx-auto bg-slate-800 rounded-full flex items-center justify-center text-brand-yellow text-2xl mb-6 border border-slate-700 group-hover:border-brand-yellow transition-colors">
+                        <i class="fa-solid fa-satellite-dish"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Real-Time Tracking</h3>
+                    <p class="text-slate-400 text-sm px-4">
+                        Advanced GPS and IoT integration allowing you to monitor your shipments 24/7 with live updates
+                        and notifications.
+                    </p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="text-center group">
+                    <div
+                        class="w-16 h-16 mx-auto bg-slate-800 rounded-full flex items-center justify-center text-brand-yellow text-2xl mb-6 border border-slate-700 group-hover:border-brand-yellow transition-colors">
+                        <i class="fa-solid fa-globe"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Global Network</h3>
+                    <p class="text-slate-400 text-sm px-4">
+                        Partnerships with leading carriers and agents in 150+ countries to ensure seamless door-to-door
+                        delivery worldwide.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Stats Divider -->
+            <div class="border-t border-slate-800 pt-16">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                    <div>
+                        <div class="text-4xl font-bold text-brand-yellow mb-2">150+</div>
+                        <div class="text-sm text-slate-400 uppercase tracking-wide">Countries Served</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold text-brand-yellow mb-2">12K+</div>
+                        <div class="text-sm text-slate-400 uppercase tracking-wide">Happy Clients</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold text-brand-yellow mb-2">99.2%</div>
+                        <div class="text-sm text-slate-400 uppercase tracking-wide">On-Time Delivery</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold text-brand-yellow mb-2">24/7</div>
+                        <div class="text-sm text-slate-400 uppercase tracking-wide">Customer Support</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="quote" class="py-24 bg-gray-50">
+        <div class="container mx-auto px-6 text-center">
+            <span class="text-brand-yellow font-bold tracking-wider uppercase text-xs">Get In Touch</span>
+            <h2 class="text-3xl md:text-4xl font-bold text-brand-blue mt-2 mb-4">Ready to Work With Us?</h2>
+            <p class="text-gray-500 text-lg font-medium mb-3 max-w-2xl mx-auto">
+                We specialized in customized logistics solutions for business clients.
+            </p>
+            <p class="text-gray-600 mb-10 max-w-xl mx-auto">
+                Tell us what you need, and we'll start crafting the perfect solution for you.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="openEnquiryModal('logistics')"
+                    class="bg-brand-yellow text-brand-blue px-8 py-4 rounded font-bold hover:bg-yellow-400 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-truck-fast"></i> Request Logistics Services
+                </button>
+                <button onclick="openEnquiryModal('vendor')"
+                    class="bg-brand-blue text-white px-8 py-4 rounded font-bold hover:bg-slate-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center gap-2 border border-slate-700">
+                    <i class="fa-solid fa-handshake"></i> Vendor / Partner Enquiry
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Google Map Section -->
+    <section id="map-section" class="hidden">
+        <div class="w-full h-[450px]">
+            <iframe id="googleMap" src="" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-brand-blue text-slate-300 py-16 border-t border-slate-800">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <!-- Brand Info -->
+                <div>
+                    <a href="#" class="flex items-center gap-2 mb-6" id="footerLogoLink">
+                        <div id="footerLogoText" class="flex items-center gap-2">
+                            <div
+                                class="w-10 h-10 bg-brand-yellow rounded flex items-center justify-center text-brand-blue font-bold text-xl">
+                                <i class="fa-solid fa-truck-fast"></i>
+                            </div>
+                            <span class="text-2xl font-bold text-white">JASS<span
+                                    class="text-brand-yellow">Logistics</span></span>
+                        </div>
+                        <img id="footerLogoImg" src="public/logo.png" alt="JASS Logistics" class="h-16">
+                    </a>
+                    <p class="text-sm text-slate-400 mb-6">
+                        3500 Logistics Center Drive, Jacksonville FL, 32218, United States.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-yellow hover:text-brand-blue transition-colors"><i
+                                class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-yellow hover:text-brand-blue transition-colors"><i
+                                class="fa-brands fa-twitter"></i></a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-yellow hover:text-brand-blue transition-colors"><i
+                                class="fa-brands fa-linkedin-in"></i></a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-yellow hover:text-brand-blue transition-colors"><i
+                                class="fa-brands fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <!-- Services Links -->
+                <div>
+                    <h4 class="text-white font-bold mb-6">Services</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="#" class="hover:text-brand-yellow transition-colors">Air Freight</a></li>
+                        <li><a href="#" class="hover:text-brand-yellow transition-colors">Ocean Freight</a></li>
+                        <li><a href="#" class="hover:text-brand-yellow transition-colors">Road Transport</a></li>
+                        <li><a href="#" class="hover:text-brand-yellow transition-colors">Warehousing</a></li>
+                        <li><a href="#" class="hover:text-brand-yellow transition-colors">Supply Chain</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company Links -->
+                <div>
+                    <h4 class="text-white font-bold mb-6">Company</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="#" class="hover:text-brand-yellow transition-colors">About Us</a></li>
+                        <li><a href="#" class="hover:text-brand-yellow transition-colors">Careers</a></li>
+                        <li><a href="#" class="hover:text-brand-yellow transition-colors">News</a></li>
+                        <li><a href="#" class="hover:text-brand-yellow transition-colors">Partners</a></li>
+                        <li><a href="#" class="hover:text-brand-yellow transition-colors">Privacy Policy</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h4 class="text-white font-bold mb-6">Contact</h4>
+                    <ul class="space-y-4 text-sm">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-phone mt-1 text-brand-yellow"></i>
+                            <span>+1 (800) 123-4567<br>+1 (800) 987-6543</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-envelope mt-1 text-brand-yellow"></i>
+                            <span>info@jasslogistics.com<br>support@jasslogistics.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div
+                class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
+                <p>&copy; 2026 JASS Logistics. All rights reserved.</p>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                    <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button id="scroll-to-top"
+        class="w-12 h-12 bg-brand-yellow text-brand-blue rounded-full shadow-2xl flex items-center justify-center text-xl hover:bg-yellow-400 focus:outline-none transition-all duration-300"
+        aria-label="Scroll to top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <!-- JavaScript for Interactivity -->
+    <script>
+        // Navbar Scroll Effect
+        const navbar = document.getElementById('navbar');
+        const logoText = navbar.querySelector('span');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.remove('bg-transparent', 'py-4');
+                navbar.classList.add('bg-brand-blue', 'shadow-md', 'py-2');
+            } else {
+                navbar.classList.add('bg-transparent', 'py-4');
+                navbar.classList.remove('bg-brand-blue', 'shadow-md', 'py-2');
+            }
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const icon = mobileMenuBtn.querySelector('i');
+            if (mobileMenu.classList.contains('hidden')) {
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            } else {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-xmark');
+            }
+        });
+
+        // Smooth Scroll for Anchor Links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                mobileMenu.classList.add('hidden'); // Close mobile menu on click
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Simple Intersection Observer for Fade-in Animations on Scroll
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fade-in-up');
+                    entry.target.style.opacity = "1"; // Ensure it stays visible
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Select elements to animate
+        document.querySelectorAll('.service-card, #about .grid > div').forEach((el) => {
+            el.style.opacity = "0"; // Initial state
+            observer.observe(el);
+        });
+
+        // Scroll to Top Logic
+        const scrollTopBtn = document.getElementById('scroll-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 400) {
+                scrollTopBtn.classList.add('show');
+            } else {
+                scrollTopBtn.classList.remove('show');
+            }
+        });
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+    </script>
+
+    // Global variables for slider
+    let currentSlide = 0;
+    let slidesData = [];
+    let autoSlideInterval;
+
+    // API Configuration — always use relative paths (works on WAMP & Hostinger)
+    const API_BASE = '';
+
+    // Fetch Content
+    async function fetchContent() {
+        try {
+            console.log('Fetching content from: api/content.php');
+            const response = await fetch('api/content.php');
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await response.json();
+            console.log('Data received:', data);
+
+            // 1. Hero Section (Slider)
+            if (data.heroSlides && data.heroSlides.length > 0) {
+                slidesData = data.heroSlides;
+                renderHeroSlide(0);
+                if (slidesData.length > 1) {
+                    startSlider();
+                }
+            }
+
+
+            // 2. Services Section
+            if (data.services) {
+                const container = document.querySelector('#services .grid');
+                container.innerHTML = data.services.map(service => `
+                        <div class="service-card bg-white p-8 rounded-xl shadow-sm border border-gray-100 transition-all duration-300 group cursor-pointer animate-fade-in-up" style="opacity: 1">
+                            <div class="service-icon-wrapper w-16 h-16 bg-orange-100 text-brand-yellow rounded-full flex items-center justify-center text-2xl mb-6 mx-auto md:mx-0">
+                                <i class="fa-solid ${service.icon}"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-brand-blue mb-3 text-center md:text-left">${service.title}</h3>
+                            <p class="text-gray-500 text-sm leading-relaxed text-center md:text-left">${service.description}</p>
+                        </div>
+                    `).join('');
+            }
+
+            // 3. About Section
+            if (data.about) {
+                const aboutContainer = document.querySelector('#about .max-w-4xl');
+                if (data.about.whoWeAre) {
+                    aboutContainer.innerHTML = data.about.whoWeAre.split('\n\n').map(p => `
+                            <p class="text-gray-600 leading-relaxed mb-6">${p}</p>
+                        `).join('');
+                }
+                if (data.about.mission) {
+                    document.querySelector('#about .grid div:nth-child(1) p').textContent = data.about.mission;
+                }
+                if (data.about.vision) {
+                    document.querySelector('#about .grid div:nth-child(2) p').textContent = data.about.vision;
+                }
+            }
+
+            // 4. Why Choose Us (Features)
+            if (data.features) {
+                const featuresContainer = document.querySelector('#features .grid');
+                if (featuresContainer) {
+                    featuresContainer.innerHTML = data.features.map(feature => `
+                        <div class="text-center group">
+                            <div class="w-16 h-16 mx-auto bg-slate-800 rounded-full flex items-center justify-center text-brand-yellow text-2xl mb-6 border border-slate-700 group-hover:border-brand-yellow transition-colors">
+                                <i class="fa-solid ${feature.icon || 'fa-check'}"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-3">${feature.title}</h3>
+                            <p class="text-slate-400 text-sm px-4">${feature.description}</p>
+                        </div>
+                    `).join('');
+                }
+            }
+
+
+            // 5. Footer & Contact
+            if (data.contact) {
+                // Update Contact List
+                const contactList = document.querySelector('footer ul.space-y-4');
+                contactList.innerHTML = `
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-phone mt-1 text-brand-yellow"></i>
+                            <span>${data.contact.phone1}<br>${data.contact.phone2}</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-envelope mt-1 text-brand-yellow"></i>
+                            <span>${data.contact.email1}<br>${data.contact.email2}</span>
+                        </li>
+                    `;
+                // Update Address
+                document.querySelector('footer p.text-sm.text-slate-400').textContent = data.contact.address;
+
+                // Update Social Links
+                if (data.contact.social) {
+                    const socialContainer = document.querySelector('footer .flex.gap-4');
+                    socialContainer.innerHTML = `
+                            <a href="${data.contact.social.facebook}" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-yellow hover:text-brand-blue transition-colors"><i class="fa-brands fa-facebook-f"></i></a>
+                            <a href="${data.contact.social.twitter}" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-yellow hover:text-brand-blue transition-colors"><i class="fa-brands fa-twitter"></i></a>
+                            <a href="${data.contact.social.linkedin}" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-yellow hover:text-brand-blue transition-colors"><i class="fa-brands fa-linkedin-in"></i></a>
+                            <a href="${data.contact.social.instagram}" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-yellow hover:text-brand-blue transition-colors"><i class="fa-brands fa-instagram"></i></a>
+                        `;
+                }
+            }
+
+            // 6. Website Settings (Logo, Favicon, Map)
+            if (data.website) {
+                // Logo
+                const logoImg = document.getElementById('logoImg');
+                const logoText = document.getElementById('logoText');
+                const footerLogoImg = document.getElementById('footerLogoImg');
+                const footerLogoText = document.getElementById('footerLogoText');
+
+                if (data.website.logo) {
+                    if (logoPath && !logoPath.startsWith('http') && !logoPath.startsWith('/')) {
+                        // Ensure relative paths work if site is in subdirectory
+                        logoPath = API_BASE + logoPath;
+                    }
+                    if (logoImg) {
+                        logoImg.src = logoPath;
+                        logoImg.classList.remove('hidden');
+                    }
+                    if (logoText) logoText.classList.add('hidden');
+
+                    if (footerLogoImg) {
+                        footerLogoImg.src = logoPath;
+                        footerLogoImg.classList.remove('hidden');
+                    }
+                    if (footerLogoText) footerLogoText.classList.add('hidden');
+                } else {
+                    if (logoImg) logoImg.classList.add('hidden');
+                    if (logoText) logoText.classList.remove('hidden');
+
+                    if (footerLogoImg) footerLogoImg.classList.add('hidden');
+                    if (footerLogoText) footerLogoText.classList.remove('hidden');
+                }
+
+
+                // Favicon
+                if (data.website.favicon) {
+                    let favPath = data.website.favicon;
+                    if (favPath && !favPath.startsWith('http') && !favPath.startsWith('/')) {
+                        favPath = API_BASE + favPath;
+                    }
+                    const favEl = document.getElementById('favicon');
+                    if (favEl) favEl.href = favPath;
+                }
+
+
+                // Map
+                if (data.website.mapEmbed) {
+                    let mapUrl = data.website.mapEmbed;
+                    // Extract src from iframe tag if provided
+                    const match = mapUrl.match(/src="([^"]+)"/);
+                    if (match) {
+                        mapUrl = match[1];
+                    }
+                    document.getElementById('googleMap').src = mapUrl;
+                    document.getElementById('map-section').classList.remove('hidden');
+                } else {
+                    document.getElementById('map-section').classList.add('hidden');
+                }
+            }
+
+        } catch (error) {
+            console.error('Error fetching content:', error);
+        }
+    }
+
+    let currentBgLayer = 1;
+
+    function renderHeroSlide(index) {
+        const slide = slidesData[index];
+        const nextLayerNum = currentBgLayer === 1 ? 2 : 1;
+        const currentLayer = document.getElementById(`hero-bg-layer-${currentBgLayer}`);
+        const nextLayer = document.getElementById(`hero-bg-layer-${nextLayerNum}`);
+        const content = document.getElementById('hero-content');
+
+        // Resolve Path
+        let bgPath = slide.backgroundImage;
+        if (bgPath && !bgPath.startsWith('http') && !bgPath.startsWith('/')) {
+            bgPath = API_BASE + bgPath;
+        }
+
+
+        // Prep next layer
+
+        // Prep next layer
+        nextLayer.style.backgroundImage = `url('${bgPath}')`;
+        nextLayer.classList.replace('fade-out', 'fade-in');
+        currentLayer.classList.replace('fade-in', 'fade-out');
+
+        // Toggle Layer Tracker
+        currentBgLayer = nextLayerNum;
+
+        // Animate Content
+        content.classList.remove('animate-fade-in-up');
+        void content.offsetWidth; // Trigger reflow for animation restart
+
+        document.getElementById('hero-subtitle').textContent = slide.subtitle;
+        document.getElementById('hero-title-line1').textContent = slide.titleLine1;
+        document.getElementById('hero-title-highlight').textContent = slide.titleHighlight;
+        document.getElementById('hero-description').textContent = slide.description;
+
+        content.classList.add('animate-fade-in-up');
+    }
+
+    function startSlider() {
+        if (autoSlideInterval) clearInterval(autoSlideInterval);
+        autoSlideInterval = setInterval(() => {
+            currentSlide = (currentSlide + 1) % slidesData.length;
+            renderHeroSlide(currentSlide);
+        }, 8000);
+    }
+
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % slidesData.length;
+        renderHeroSlide(currentSlide);
+        startSlider(); // Reset timer
+    }
+
+    function prevSlide() {
+        currentSlide = (currentSlide - 1 + slidesData.length) % slidesData.length;
+        renderHeroSlide(currentSlide);
+        startSlider(); // Reset timer
+    }
+
+    // Enquiry Modal Logic
+    let enquiryType = ''; // 'logistics' or 'vendor'
+    let selectedCategory = '';
+
+    function openEnquiryModal(type) {
+        enquiryType = type;
+        const modal = document.getElementById('enquiryModal');
+        const title = document.getElementById('modalTitle');
+        const step1 = document.getElementById('modalStep1');
+        const step2 = document.getElementById('modalStep2');
+
+        // Reset
+        selectedCategory = '';
+        document.querySelectorAll('.category-tile').forEach(t => t.classList.remove('border-brand-yellow', 'bg-yellow-50'));
+        document.getElementById('enquiryForm').reset();
+        
+        step1.classList.remove('hidden');
+        step2.classList.add('hidden');
+
+        if (type === 'vendor') {
+            title.textContent = "Let's do Business!";
+        } else {
+            title.textContent = "Select Service Category";
+        }
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeEnquiryModal() {
+        const modal = document.getElementById('enquiryModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = 'auto';
+    }
+
+    function selectCategory(el, category) {
+        selectedCategory = category;
+        document.querySelectorAll('.category-tile').forEach(t => t.classList.remove('border-brand-yellow', 'bg-yellow-50'));
+        el.classList.add('border-brand-yellow', 'bg-yellow-50');
+    }
+
+    function nextStep() {
+        if (!selectedCategory) {
+            alert('Please select a category first.');
+            return;
+        }
+        document.getElementById('modalStep1').classList.add('hidden');
+        document.getElementById('modalStep2').classList.remove('hidden');
+    }
+
+    document.getElementById('enquiryForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const company = document.getElementById('eq_company').value;
+        const firstName = document.getElementById('eq_firstName').value;
+        const lastName = document.getElementById('eq_lastName').value;
+        const phone = document.getElementById('eq_phone').value;
+        const email = document.getElementById('eq_email').value;
+        const website = document.getElementById('eq_website').value;
+
+        const typeLabel = enquiryType === 'logistics' ? 'Logistics Service Request' : 'Vendor/Partner Enquiry';
+        
+        let message = `*${typeLabel}*\n\n`;
+        message += `*Category:* ${selectedCategory}\n`;
+        message += `*Company:* ${company}\n`;
+        message += `*Contact:* ${firstName} ${lastName}\n`;
+        message += `*Phone:* ${phone}\n`;
+        message += `*Email:* ${email}\n`;
+        message += `*Website:* ${website}`;
+
+        const whatsappUrl = `https://wa.me/447570668047?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
+        closeEnquiryModal();
+    });
+
+    // Call on load
+    fetchContent();
+</script>
+
+<!-- Enquiry Modal -->
+<div id="enquiryModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col animate-fade-in-up">
+        <!-- Header -->
+        <div class="px-6 py-4 border-b flex justify-between items-center bg-brand-blue text-white">
+            <h3 id="modalTitle" class="text-xl font-bold">Select Category</h3>
+            <button onclick="closeEnquiryModal()" class="text-white/80 hover:text-white transition-colors">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+            </button>
+        </div>
+
+        <div class="p-6 overflow-y-auto flex-grow">
+            <!-- Step 1: Categories -->
+            <div id="modalStep1">
+                <p class="text-gray-500 mb-6 text-center">Please select the category that best fits your enquiry.</p>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div onclick="selectCategory(this, 'Air')" class="category-tile border-2 rounded-xl p-6 text-center cursor-pointer hover:border-brand-yellow transition-all flex flex-col items-center gap-3">
+                        <i class="fa-solid fa-plane-up text-3xl text-brand-blue"></i>
+                        <span class="font-bold">Air</span>
+                    </div>
+                    <div onclick="selectCategory(this, 'Sea')" class="category-tile border-2 rounded-xl p-6 text-center cursor-pointer hover:border-brand-yellow transition-all flex flex-col items-center gap-3">
+                        <i class="fa-solid fa-ship text-3xl text-brand-blue"></i>
+                        <span class="font-bold">Sea</span>
+                    </div>
+                    <div onclick="selectCategory(this, 'Road')" class="category-tile border-2 rounded-xl p-6 text-center cursor-pointer hover:border-brand-yellow transition-all flex flex-col items-center gap-3">
+                        <i class="fa-solid fa-truck-moving text-3xl text-brand-blue"></i>
+                        <span class="font-bold">Road</span>
+                    </div>
+                    <div onclick="selectCategory(this, 'Contract Logistics')" class="category-tile border-2 rounded-xl p-6 text-center cursor-pointer hover:border-brand-yellow transition-all flex flex-col items-center gap-3">
+                        <i class="fa-solid fa-warehouse text-3xl text-brand-blue"></i>
+                        <span class="font-bold">Contract Logistics</span>
+                    </div>
+                    <div onclick="selectCategory(this, 'General')" class="category-tile border-2 rounded-xl p-6 text-center cursor-pointer hover:border-brand-yellow transition-all flex flex-col items-center gap-3">
+                        <i class="fa-solid fa-cubes text-3xl text-brand-blue"></i>
+                        <span class="font-bold">General</span>
+                    </div>
+                </div>
+                <div class="mt-8 flex justify-center">
+                    <button onclick="nextStep()" class="bg-brand-yellow text-brand-blue px-12 py-3 rounded-lg font-bold hover:bg-yellow-400 transition-colors shadow-lg">
+                        Next <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: Form -->
+            <div id="modalStep2" class="hidden">
+                <form id="enquiryForm" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Company Name</label>
+                            <input type="text" id="eq_company" required placeholder="Your Company Ltd" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-yellow focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">First Name</label>
+                            <input type="text" id="eq_firstName" required placeholder="John" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-yellow focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Last Name</label>
+                            <input type="text" id="eq_lastName" required placeholder="Doe" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-yellow focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Phone Number</label>
+                            <input type="tel" id="eq_phone" required placeholder="+1 234 567 890" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-yellow focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Email Address</label>
+                            <input type="email" id="eq_email" required placeholder="john@example.com" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-yellow focus:outline-none">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Company Website</label>
+                            <input type="url" id="eq_website" placeholder="https://www.company.com" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-yellow focus:outline-none">
+                        </div>
+                    </div>
+                    <div class="mt-8 pt-4 border-t flex gap-4">
+                        <button type="button" onclick="document.getElementById('modalStep1').classList.remove('hidden'); document.getElementById('modalStep2').classList.add('hidden');" class="flex-1 py-3 border rounded-lg font-bold text-gray-600 hover:bg-gray-50">Back</button>
+                        <button type="submit" class="flex-1 py-3 bg-green-500 text-white rounded-lg font-bold hover:bg-green-600 transition-colors shadow-lg flex items-center justify-center gap-2">
+                            <i class="fa-brands fa-whatsapp text-xl"></i> Submit via WhatsApp
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

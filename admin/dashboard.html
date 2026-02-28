@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - JASS Logistics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // Check Auth
+        if (!localStorage.getItem('adminToken')) {
+            window.location.href = 'index.html';
+        }
+    </script>
+</head>
+
+<body class="bg-slate-100 font-sans text-slate-800">
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-slate-900 text-white flex flex-col">
+            <div class="p-6 border-b border-slate-700">
+                <div class="flex items-center gap-2">
+                    <div
+                        class="w-8 h-8 bg-yellow-500 rounded flex items-center justify-center text-slate-900 font-bold">
+                        <i class="fa-solid fa-truck-fast"></i>
+                    </div>
+                    <span class="text-xl font-bold">Admin<span class="text-yellow-500">Panel</span></span>
+                </div>
+            </div>
+
+            <nav class="flex-1 p-4 space-y-2 overflow-y-auto" id="sidebarLinks">
+                <a href="javascript:void(0)" onclick="switchTab('hero')" data-tab="hero"
+                    class="tab-link flex items-center gap-3 px-4 py-3 bg-yellow-500 text-slate-900 rounded-lg font-medium">
+                    <i class="fa-solid fa-images"></i> Hero Slider
+                </a>
+                <a href="javascript:void(0)" onclick="switchTab('services')" data-tab="services"
+                    class="tab-link flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+                    <i class="fa-solid fa-handshake"></i> Services
+                </a>
+                <a href="javascript:void(0)" onclick="switchTab('about')" data-tab="about"
+                    class="tab-link flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+                    <i class="fa-solid fa-circle-info"></i> About Us
+                </a>
+                <a href="javascript:void(0)" onclick="switchTab('features')" data-tab="features"
+                    class="tab-link flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+                    <i class="fa-solid fa-star"></i> Features
+                </a>
+                <a href="javascript:void(0)" onclick="switchTab('contact')" data-tab="contact"
+                    class="tab-link flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+                    <i class="fa-solid fa-globe"></i> Website Settings
+                </a>
+                <a href="javascript:void(0)" onclick="switchTab('security')" data-tab="security"
+                    class="tab-link flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+                    <i class="fa-solid fa-shield-halved"></i> Security Settings
+                </a>
+                <div class="pt-4 border-t border-slate-700">
+                    <a href="../" target="_blank"
+                        class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+                        <i class="fa-solid fa-external-link"></i> View Website
+                    </a>
+                </div>
+            </nav>
+
+            <div class="p-4 border-t border-slate-700">
+                <button id="logoutBtn"
+                    class="flex items-center gap-3 px-4 py-3 text-red-400 hover:text-red-300 hover:bg-slate-800 rounded-lg w-full transition-colors">
+                    <i class="fa-solid fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto bg-slate-100 p-8">
+            <header class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold text-slate-800" id="currentTabTitle">Hero Slider</h1>
+                    <p class="text-slate-500 text-sm">Manage your website content efficiently</p>
+                </div>
+                <button id="saveBtn"
+                    class="bg-yellow-500 text-slate-900 px-6 py-2 rounded-lg font-bold hover:bg-yellow-400 transition-colors shadow-lg flex items-center gap-2">
+                    <i class="fa-solid fa-save"></i> Save All Changes
+                </button>
+            </header>
+
+            <div class="max-w-4xl mx-auto space-y-8 pb-12">
+
+                <!-- Tab: Hero Slider -->
+                <div id="tab-hero" class="tab-content">
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200">
+                        <div class="flex justify-between items-center mb-4 border-b pb-2">
+                            <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-images text-yellow-500"></i> Hero Slider Slides
+                            </h2>
+                            <button onclick="addSlide()"
+                                class="text-sm bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1 rounded flex items-center gap-1 transition-colors">
+                                <i class="fa-solid fa-plus text-xs"></i> Add Slide
+                            </button>
+                        </div>
+                        <div id="slidesContainer" class="space-y-6">
+                            <!-- Slides will be injected here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Services -->
+                <div id="tab-services" class="tab-content hidden">
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200">
+                        <div class="flex justify-between items-center mb-4 border-b pb-2">
+                            <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-handshake text-yellow-500"></i> What We Offer
+                            </h2>
+                            <button onclick="addService()"
+                                class="text-sm bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1 rounded flex items-center gap-1 transition-colors">
+                                <i class="fa-solid fa-plus text-xs"></i> Add Service
+                            </button>
+                        </div>
+                        <div id="servicesContainer" class="grid md:grid-cols-2 gap-4">
+                            <!-- Services will be injected here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: About -->
+                <div id="tab-about" class="tab-content hidden">
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200">
+                        <h2 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-circle-info text-yellow-500"></i> About Us Content
+                        </h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Who We Are</label>
+                                <textarea id="aboutWhoWeAre" rows="8"
+                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"></textarea>
+                            </div>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Our Mission</label>
+                                    <textarea id="aboutMission" rows="6"
+                                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Our Vision</label>
+                                    <textarea id="aboutVision" rows="6"
+                                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Features -->
+                <div id="tab-features" class="tab-content hidden">
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200">
+                        <div class="flex justify-between items-center mb-4 border-b pb-2">
+                            <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-star text-yellow-500"></i> Why Choose Us Features
+                            </h2>
+                            <button onclick="addFeature()"
+                                class="text-sm bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1 rounded flex items-center gap-1 transition-colors">
+                                <i class="fa-solid fa-plus text-xs"></i> Add Feature
+                            </button>
+                        </div>
+                        <div id="featuresContainer" class="space-y-4">
+                            <!-- Features will be injected here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Contact -->
+                <div id="tab-contact" class="tab-content hidden">
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200">
+                        <h2 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-globe text-yellow-500"></i> Website Section
+                        </h2>
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <div class="space-y-4">
+                                <h3 class="font-bold text-slate-700 underline">General Identity</h3>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Website Logo</label>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="siteLogo"
+                                            class="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+                                            placeholder="URL to logo">
+                                        <div class="relative">
+                                            <input type="file" class="hidden" accept="image/*"
+                                                onchange="uploadFile(this)">
+                                            <button onclick="triggerUpload(this)"
+                                                class="bg-slate-800 text-white px-3 py-2 rounded hover:bg-slate-700 transition-colors">
+                                                <i class="fa-solid fa-upload"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Favicon</label>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="siteFavicon"
+                                            class="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+                                            placeholder="URL to favicon">
+                                        <div class="relative">
+                                            <input type="file" class="hidden" accept="image/*"
+                                                onchange="uploadFile(this)">
+                                            <button onclick="triggerUpload(this)"
+                                                class="bg-slate-800 text-white px-3 py-2 rounded hover:bg-slate-700 transition-colors">
+                                                <i class="fa-solid fa-upload"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Google Map Embed
+                                        Link</label>
+                                    <textarea id="siteMap" rows="3"
+                                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+                                        placeholder="Paste iframe src URL here"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Address</label>
+                                    <input type="text" id="contactAddress"
+                                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none">
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Phone 1</label>
+                                        <input type="text" id="contactPhone1"
+                                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Phone 2</label>
+                                        <input type="text" id="contactPhone2"
+                                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none">
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Email 1</label>
+                                        <input type="text" id="contactEmail1"
+                                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Email 2</label>
+                                        <input type="text" id="contactEmail2"
+                                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <h3 class="font-bold text-slate-700 underline">Social Links</h3>
+                                <div class="grid grid-cols-1 gap-3">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 text-center text-blue-600"><i class="fa-brands fa-facebook"></i>
+                                        </div>
+                                        <input type="text" id="socialFacebook" placeholder="Facebook URL"
+                                            class="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none">
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 text-center text-sky-400"><i class="fa-brands fa-twitter"></i>
+                                        </div>
+                                        <input type="text" id="socialTwitter" placeholder="Twitter URL"
+                                            class="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none">
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 text-center text-blue-800"><i class="fa-brands fa-linkedin"></i>
+                                        </div>
+                                        <input type="text" id="socialLinkedin" placeholder="LinkedIn URL"
+                                            class="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none">
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 text-center text-pink-600"><i
+                                                class="fa-brands fa-instagram"></i></div>
+                                        <input type="text" id="socialInstagram" placeholder="Instagram URL"
+                                            class="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Security Settings -->
+                <div id="tab-security" class="tab-content hidden">
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200">
+                        <h2 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-shield-halved text-yellow-500"></i> Admin Access Settings
+                        </h2>
+                        <div class="max-w-md space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Admin Username</label>
+                                <input type="text" id="adminUsername"
+                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">New Password</label>
+                                <input type="password" id="adminPassword"
+                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+                                    placeholder="Enter new password">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Confirm New
+                                    Password</label>
+                                <input type="password" id="adminConfirmPassword"
+                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+                                    placeholder="Confirm new password">
+                            </div>
+                            <div class="pt-4">
+                                <button onclick="updateAdminSettings()"
+                                    class="bg-slate-900 text-white px-6 py-2 rounded-lg font-bold hover:bg-slate-800 transition-colors shadow flex items-center gap-2">
+                                    <i class="fa-solid fa-key"></i> Update Credentials
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <div id="toast"
+        class="fixed bottom-4 right-4 bg-slate-800 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+        <span id="toastMessage">Changes saved successfully!</span>
+    </div>
+
+    <script>
+        let currentData = {};
+
+        // API Configuration — always use relative paths (works on WAMP & Hostinger)
+        const API_BASE = '';
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            // Show target tab
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            // Update Sidebar Links
+            document.querySelectorAll('.tab-link').forEach(link => {
+                if (link.dataset.tab === tabId) {
+                    link.classList.add('bg-yellow-500', 'text-slate-900');
+                    link.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-slate-800');
+                } else {
+                    link.classList.remove('bg-yellow-500', 'text-slate-900');
+                    link.classList.add('text-slate-400', 'hover:text-white', 'hover:bg-slate-800');
+                }
+            });
+
+            // Update Title
+            const titles = {
+                'hero': 'Hero Slider',
+                'services': 'What We Offer',
+                'about': 'About Us',
+                'features': 'Why Choose Us',
+                'contact': 'Website Settings'
+            };
+            document.getElementById('currentTabTitle').textContent = titles[tabId];
+        }
+
+        // Image Upload Logic
+        function triggerUpload(btn) {
+            btn.parentElement.querySelector('input[type="file"]').click();
+        }
+
+        async function uploadFile(input) {
+            if (!input.files || input.files.length === 0) return;
+
+            const file = input.files[0];
+            const formData = new FormData();
+            formData.append('image', file);
+
+            const btn = input.parentElement.querySelector('button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('api/upload.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Server returned ${response.status}: ${errorText}`);
+                }
+
+                const result = await response.json();
+                if (result.success) {
+                    const urlInput = input.parentElement.parentElement.querySelector('input[type="text"]');
+                    if (urlInput) {
+                        urlInput.value = result.filePath;
+                        if (urlInput.classList.contains('slide-img')) {
+                            updateSlidePreview(urlInput);
+                        }
+                    }
+                    showToast('Image uploaded successfully!');
+                } else {
+                    alert('Upload failed: ' + (result.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                alert('Upload Error: ' + error.message);
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // Load Data
+        async function loadData() {
+            try {
+                const response = await fetch('api/content.php');
+                currentData = await response.json();
+
+
+                // Populate Slides
+                const slidesContainer = document.getElementById('slidesContainer');
+                slidesContainer.innerHTML = '';
+                (currentData.heroSlides || []).forEach((slide, index) => {
+                    addSlideUI(slide, index);
+                });
+
+                // Populate Services
+                const servicesContainer = document.getElementById('servicesContainer');
+                servicesContainer.innerHTML = '';
+                (currentData.services || []).forEach((service, index) => {
+                    addServiceUI(service, index);
+                });
+
+                // Populate About
+                if (currentData.about) {
+                    document.getElementById('aboutWhoWeAre').value = currentData.about.whoWeAre || '';
+                    document.getElementById('aboutMission').value = currentData.about.mission || '';
+                    document.getElementById('aboutVision').value = currentData.about.vision || '';
+                }
+
+                // Populate Features
+                const featuresContainer = document.getElementById('featuresContainer');
+                featuresContainer.innerHTML = '';
+                (currentData.features || []).forEach((feature, index) => {
+                    addFeatureUI(feature, index);
+                });
+
+                // Populate Contact & Social
+                if (currentData.contact) {
+                    document.getElementById('contactAddress').value = currentData.contact.address || '';
+                    document.getElementById('contactPhone1').value = currentData.contact.phone1 || '';
+                    document.getElementById('contactPhone2').value = currentData.contact.phone2 || '';
+                    document.getElementById('contactEmail1').value = currentData.contact.email1 || '';
+                    document.getElementById('contactEmail2').value = currentData.contact.email2 || '';
+
+                    if (currentData.contact.social) {
+                        document.getElementById('socialFacebook').value = currentData.contact.social.facebook || '';
+                        document.getElementById('socialTwitter').value = currentData.contact.social.twitter || '';
+                        document.getElementById('socialLinkedin').value = currentData.contact.social.linkedin || '';
+                        document.getElementById('socialInstagram').value = currentData.contact.social.instagram || '';
+                    }
+                }
+
+                // Populate Website Settings
+                if (currentData.website) {
+                    document.getElementById('siteLogo').value = currentData.website.logo || '';
+                    document.getElementById('siteFavicon').value = currentData.website.favicon || '';
+                    document.getElementById('siteMap').value = currentData.website.mapEmbed || '';
+                }
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showToast('Error loading data', true);
+            }
+        }
+
+        // --- UI Addition Functions ---
+
+        function addSlideUI(slide = {}, index) {
+            const container = document.getElementById('slidesContainer');
+            const div = document.createElement('div');
+            div.className = "p-4 border border-slate-100 rounded-lg bg-slate-50 relative group slide-item";
+            let bgPath = slide.backgroundImage || '';
+            if (bgPath && !bgPath.startsWith('http') && !bgPath.startsWith('/')) {
+                bgPath = API_BASE + bgPath;
+            }
+
+            div.innerHTML = `
+                <button onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-3">
+                        <input type="text" placeholder="Subtitle" class="slide-subtitle w-full px-3 py-1.5 border rounded" value="${slide.subtitle || ''}">
+                        <input type="text" placeholder="Title Line 1" class="slide-title1 w-full px-3 py-1.5 border rounded" value="${slide.titleLine1 || ''}">
+                        <input type="text" placeholder="Title Highlight" class="slide-highlight w-full px-3 py-1.5 border rounded" value="${slide.titleHighlight || ''}">
+                        <textarea placeholder="Description" class="slide-desc w-full px-3 py-1.5 border rounded" rows="2">${slide.description || ''}</textarea>
+                    </div>
+                    <div class="space-y-3">
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Background Image</label>
+                        <div class="flex gap-2">
+                            <input type="text" placeholder="Background Image URL" class="slide-img flex-1 px-3 py-1.5 border rounded" value="${slide.backgroundImage || ''}" oninput="updateSlidePreview(this)">
+                            <div class="relative">
+                                <input type="file" class="hidden" accept="image/*" onchange="uploadFile(this)">
+                                <button onclick="triggerUpload(this)" class="bg-slate-800 text-white px-3 py-1.5 rounded hover:bg-slate-700 transition-colors text-sm">
+                                    <i class="fa-solid fa-upload"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-[10px] text-slate-400 italic">Recommended: 1920x1080px (16:9) | Max: 2MB</p>
+                        <div class="h-32 bg-slate-200 rounded bg-cover bg-center border border-slate-300 slide-preview" style="background-image: url('${bgPath}')"></div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        function addServiceUI(service = {}, index) {
+            const container = document.getElementById('servicesContainer');
+            const div = document.createElement('div');
+            div.className = "p-4 border border-slate-100 rounded-lg bg-slate-50 relative group service-item";
+            div.innerHTML = `
+                <button onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+                <div class="flex gap-3 mb-2">
+                    <div class="w-12 h-12 bg-white flex items-center justify-center rounded border text-yellow-500 text-xl service-icon-preview">
+                        <i class="fa-solid ${service.icon || 'fa-box'}"></i>
+                    </div>
+                    <div class="flex-1">
+                        <input type="text" placeholder="Icon Class (fa-ship, etc)" class="service-icon w-full px-3 py-1 border rounded text-xs mb-1" value="${service.icon || ''}" oninput="updateServiceIcon(this)">
+                        <input type="text" placeholder="Service Title" class="service-title w-full px-3 py-1 border rounded font-bold" value="${service.title || ''}">
+                    </div>
+                </div>
+                <textarea placeholder="Description" class="service-desc w-full px-3 py-1 border rounded text-sm" rows="2">${service.description || ''}</textarea>
+            `;
+            container.appendChild(div);
+        }
+
+        function addFeatureUI(feature = {}, index) {
+            const container = document.getElementById('featuresContainer');
+            const div = document.createElement('div');
+            div.className = "p-4 border border-slate-100 rounded-lg bg-slate-50 relative group feature-item";
+            div.innerHTML = `
+                <button onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="flex gap-2 items-center">
+                         <div class="w-10 h-10 bg-white flex items-center justify-center rounded border text-yellow-500 feature-icon-preview"><i class="fa-solid ${feature.icon || 'fa-check'}"></i></div>
+                         <input type="text" placeholder="Icon Class" class="feature-icon flex-1 px-3 py-1.5 border rounded text-xs" value="${feature.icon || ''}" oninput="updateFeatureIcon(this)">
+                    </div>
+                    <input type="text" placeholder="Feature Title" class="feature-title w-full px-3 py-1.5 border rounded" value="${feature.title || ''}">
+                    <textarea placeholder="Description" class="feature-desc w-full px-3 py-1.5 border rounded" rows="1">${feature.description || ''}</textarea>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        // --- Interaction Handlers ---
+
+        function addSlide() { addSlideUI(); }
+        function addService() { addServiceUI(); }
+        function addFeature() { addFeatureUI(); }
+
+        function updateSlidePreview(input) {
+            const container = input.closest('.space-y-3');
+            const preview = container.querySelector('.slide-preview');
+            if (preview) {
+                let path = input.value;
+                if (path && !path.startsWith('http') && !path.startsWith('/')) {
+                    path = API_BASE + path;
+                }
+                preview.style.backgroundImage = `url('${path}')`;
+
+            }
+        }
+
+        function updateServiceIcon(input) {
+            const preview = input.closest('.service-item').querySelector('.service-icon-preview i');
+            preview.className = `fa-solid ${input.value || 'fa-box'}`;
+        }
+
+        function updateFeatureIcon(input) {
+            const preview = input.closest('.feature-item').querySelector('.feature-icon-preview i');
+            preview.className = `fa-solid ${input.value || 'fa-check'}`;
+        }
+
+        // Save Data
+        async function saveData() {
+            // Collect Slides
+            const heroSlides = [];
+            document.querySelectorAll('.slide-item').forEach(el => {
+                heroSlides.push({
+                    subtitle: el.querySelector('.slide-subtitle').value,
+                    titleLine1: el.querySelector('.slide-title1').value,
+                    titleHighlight: el.querySelector('.slide-highlight').value,
+                    description: el.querySelector('.slide-desc').value,
+                    backgroundImage: el.querySelector('.slide-img').value
+                });
+            });
+
+            // Collect Services
+            const services = [];
+            document.querySelectorAll('.service-item').forEach(el => {
+                services.push({
+                    icon: el.querySelector('.service-icon').value,
+                    title: el.querySelector('.service-title').value,
+                    description: el.querySelector('.service-desc').value
+                });
+            });
+
+            // Collect Features
+            const features = [];
+            document.querySelectorAll('.feature-item').forEach(el => {
+                features.push({
+                    icon: el.querySelector('.feature-icon').value,
+                    title: el.querySelector('.feature-title').value,
+                    description: el.querySelector('.feature-desc').value
+                });
+            });
+
+            // Build new currentData
+            const newData = {
+                heroSlides: heroSlides,
+                services: services,
+                about: {
+                    whoWeAre: document.getElementById('aboutWhoWeAre').value,
+                    mission: document.getElementById('aboutMission').value,
+                    vision: document.getElementById('aboutVision').value
+                },
+                features: features,
+                stats: currentData.stats,
+                contact: {
+                    address: document.getElementById('contactAddress').value,
+                    phone1: document.getElementById('contactPhone1').value,
+                    phone2: document.getElementById('contactPhone2').value,
+                    email1: document.getElementById('contactEmail1').value,
+                    email2: document.getElementById('contactEmail2').value,
+                    social: {
+                        facebook: document.getElementById('socialFacebook').value,
+                        twitter: document.getElementById('socialTwitter').value,
+                        linkedin: document.getElementById('socialLinkedin').value,
+                        instagram: document.getElementById('socialInstagram').value
+                    }
+                },
+                website: {
+                    logo: document.getElementById('siteLogo').value,
+                    favicon: document.getElementById('siteFavicon').value,
+                    mapEmbed: document.getElementById('siteMap').value
+                }
+            };
+
+            try {
+                const response = await fetch('api/content.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newData)
+                });
+
+
+                const result = await response.json();
+                if (result.success) {
+                    showToast('Changes saved successfully!');
+                    currentData = newData;
+                } else {
+                    showToast('Failed to save changes', true);
+                }
+            } catch (error) {
+                console.error('Error saving data:', error);
+                showToast('Error saving data', true);
+            }
+        }
+
+        // --- Utils ---
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 z-50 ${isError ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`;
+            setTimeout(() => toast.classList.remove('translate-y-20', 'opacity-0'), 10);
+            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
+        }
+
+        // Event Listeners
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('adminToken');
+            window.location.href = 'index.html';
+        });
+
+        document.getElementById('saveBtn').addEventListener('click', saveData);
+
+        // Admin Settings Logic
+        async function loadAdminSettings() {
+            try {
+                const response = await fetch('api/admin_settings.php');
+                const data = await response.json();
+
+                document.getElementById('adminUsername').value = data.username;
+            } catch (error) {
+                console.error('Error loading admin settings:', error);
+            }
+        }
+
+        async function updateAdminSettings() {
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+            const confirm = document.getElementById('adminConfirmPassword').value;
+
+            if (!username || !password) {
+                showToast('Username and password are required!', true);
+                return;
+            }
+
+            if (password !== confirm) {
+                showToast('Passwords do not match!', true);
+                return;
+            }
+
+            try {
+                const response = await fetch('api/admin_settings.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+
+                const result = await response.json();
+                if (result.success) {
+                    showToast('Admin credentials updated successfully!');
+                    document.getElementById('adminPassword').value = '';
+                    document.getElementById('adminConfirmPassword').value = '';
+                } else {
+                    showToast('Failed to update credentials!', true);
+                }
+            } catch (error) {
+                console.error('Error updating admin settings:', error);
+                showToast('Server error occurred!', true);
+            }
+        }
+
+        // Init
+        loadData();
+        loadAdminSettings();
+    </script>
+</body>
+
+</html>
