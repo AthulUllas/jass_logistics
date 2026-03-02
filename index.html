@@ -596,8 +596,10 @@
     </button>
 
     <!-- JavaScript for Interactivity -->
+    <script src="public/config.js"></script>
     <script>
         // Navbar Scroll Effect
+
         const navbar = document.getElementById('navbar');
         const logoText = navbar.querySelector('span');
 
@@ -689,219 +691,246 @@
 
     // Fetch Content
     async function fetchContent() {
-        try {
-            console.log('Fetching content from: api/content.php');
-            const response = await fetch('api/content.php');
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            const data = await response.json();
-            console.log('Data received:', data);
+    try {
+    console.log('Fetching content from: ' + CONFIG.API_BASE + 'api/content.php');
+    const response = await fetch(CONFIG.API_BASE + 'api/content.php');
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    console.log('Data received:', data);
 
-            // 1. Hero Section (Slider)
-            if (data.heroSlides && data.heroSlides.length > 0) {
-                slidesData = data.heroSlides;
-                renderHeroSlide(0);
-                if (slidesData.length > 1) {
-                    startSlider();
-                }
-            }
-
-
-            // 2. Services Section
-            if (data.services) {
-                const container = document.querySelector('#services .grid');
-                container.innerHTML = data.services.map(service => `
-                        <div class="service-card bg-white p-8 rounded-xl shadow-sm border border-gray-100 transition-all duration-300 group cursor-pointer animate-fade-in-up" style="opacity: 1">
-                            <div class="service-icon-wrapper w-16 h-16 bg-orange-100 text-brand-yellow rounded-full flex items-center justify-center text-2xl mb-6 mx-auto md:mx-0">
-                                <i class="fa-solid ${service.icon}"></i>
-                            </div>
-                            <h3 class="text-xl font-bold text-brand-blue mb-3 text-center md:text-left">${service.title}</h3>
-                            <p class="text-gray-500 text-sm leading-relaxed text-center md:text-left">${service.description}</p>
-                        </div>
-                    `).join('');
-            }
-
-            // 3. About Section
-            if (data.about) {
-                const aboutContainer = document.querySelector('#about .max-w-4xl');
-                if (data.about.whoWeAre) {
-                    aboutContainer.innerHTML = data.about.whoWeAre.split('\n\n').map(p => `
-                            <p class="text-gray-600 leading-relaxed mb-6">${p}</p>
-                        `).join('');
-                }
-                if (data.about.mission) {
-                    document.querySelector('#about .grid div:nth-child(1) p').textContent = data.about.mission;
-                }
-                if (data.about.vision) {
-                    document.querySelector('#about .grid div:nth-child(2) p').textContent = data.about.vision;
-                }
-            }
-
-            // 4. Why Choose Us (Features)
-            if (data.features) {
-                const featuresContainer = document.querySelector('#features .grid');
-                if (featuresContainer) {
-                    featuresContainer.innerHTML = data.features.map(feature => `
-                        <div class="text-center group">
-                            <div class="w-16 h-16 mx-auto bg-slate-800 rounded-full flex items-center justify-center text-brand-yellow text-2xl mb-6 border border-slate-700 group-hover:border-brand-yellow transition-colors">
-                                <i class="fa-solid ${feature.icon || 'fa-check'}"></i>
-                            </div>
-                            <h3 class="text-xl font-bold mb-3">${feature.title}</h3>
-                            <p class="text-slate-400 text-sm px-4">${feature.description}</p>
-                        </div>
-                    `).join('');
-                }
-            }
+    // 1. Hero Section (Slider)
+    if (data.heroSlides && data.heroSlides.length > 0) {
+    slidesData = data.heroSlides;
+    renderHeroSlide(0);
+    if (slidesData.length > 1) {
+    startSlider();
+    }
+    }
 
 
-            // 5. Footer & Contact
-            if (data.contact) {
-                // Update Contact List
-                const contactList = document.querySelector('footer ul.space-y-4');
-                contactList.innerHTML = `
-                        <li class="flex items-start gap-3">
-                            <i class="fa-solid fa-phone mt-1 text-brand-yellow"></i>
-                            <span>${data.contact.phone1}<br>${data.contact.phone2}</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <i class="fa-solid fa-envelope mt-1 text-brand-yellow"></i>
-                            <span>${data.contact.email1}<br>${data.contact.email2}</span>
-                        </li>
-                    `;
-                // Update Address
-                document.querySelector('footer p.text-sm.text-slate-400').textContent = data.contact.address;
+    // 2. Services Section
+    if (data.services) {
+    const container = document.querySelector('#services .grid');
+    container.innerHTML = data.services.map(service => `
+    <div class="service-card bg-white p-8 rounded-xl shadow-sm border border-gray-100 transition-all duration-300 group cursor-pointer animate-fade-in-up"
+        style="opacity: 1">
+        <div
+            class="service-icon-wrapper w-16 h-16 bg-orange-100 text-brand-yellow rounded-full flex items-center justify-center text-2xl mb-6 mx-auto md:mx-0">
+            <i class="fa-solid ${service.icon}"></i>
+        </div>
+        <h3 class="text-xl font-bold text-brand-blue mb-3 text-center md:text-left">${service.title}</h3>
+        <p class="text-gray-500 text-sm leading-relaxed text-center md:text-left">${service.description}</p>
+    </div>
+    `).join('');
+    }
 
-                // Update Social Links
-                if (data.contact.social) {
-                    const socialContainer = document.querySelector('footer .flex.gap-4');
-                    socialContainer.innerHTML = `
-                            <a href="${data.contact.social.facebook}" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-yellow hover:text-brand-blue transition-colors"><i class="fa-brands fa-facebook-f"></i></a>
-                            <a href="${data.contact.social.twitter}" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-yellow hover:text-brand-blue transition-colors"><i class="fa-brands fa-twitter"></i></a>
-                            <a href="${data.contact.social.linkedin}" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-yellow hover:text-brand-blue transition-colors"><i class="fa-brands fa-linkedin-in"></i></a>
-                            <a href="${data.contact.social.instagram}" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-yellow hover:text-brand-blue transition-colors"><i class="fa-brands fa-instagram"></i></a>
-                        `;
-                }
-            }
+    // 3. About Section
+    if (data.about) {
+    const aboutContainer = document.querySelector('#about .max-w-4xl');
+    if (data.about.whoWeAre) {
+    aboutContainer.innerHTML = data.about.whoWeAre.split('\n\n').map(p => `
+    <p class="text-gray-600 leading-relaxed mb-6">${p}</p>
+    `).join('');
+    }
+    if (data.about.mission) {
+    document.querySelector('#about .grid div:nth-child(1) p').textContent = data.about.mission;
+    }
+    if (data.about.vision) {
+    document.querySelector('#about .grid div:nth-child(2) p').textContent = data.about.vision;
+    }
+    }
 
-            // 6. Website Settings (Logo, Favicon, Map)
-            if (data.website) {
-                // Logo
-                const logoImg = document.getElementById('logoImg');
-                const logoText = document.getElementById('logoText');
-                const footerLogoImg = document.getElementById('footerLogoImg');
-                const footerLogoText = document.getElementById('footerLogoText');
+    // 4. Why Choose Us (Features)
+    if (data.features) {
+    const featuresContainer = document.querySelector('#features .grid');
+    if (featuresContainer) {
+    featuresContainer.innerHTML = data.features.map(feature => `
+    <div class="text-center group">
+        <div
+            class="w-16 h-16 mx-auto bg-slate-800 rounded-full flex items-center justify-center text-brand-yellow text-2xl mb-6 border border-slate-700 group-hover:border-brand-yellow transition-colors">
+            <i class="fa-solid ${feature.icon || 'fa-check'}"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-3">${feature.title}</h3>
+        <p class="text-slate-400 text-sm px-4">${feature.description}</p>
+    </div>
+    `).join('');
+    }
+    }
 
-                if (data.website.logo) {
-                    if (logoPath && !logoPath.startsWith('http') && !logoPath.startsWith('/')) {
-                        // Ensure relative paths work if site is in subdirectory
-                        logoPath = API_BASE + logoPath;
-                    }
-                    if (logoImg) {
-                        logoImg.src = logoPath;
-                        logoImg.classList.remove('hidden');
-                    }
-                    if (logoText) logoText.classList.add('hidden');
+    // 4.5 Stats Section
+    if (data.stats) {
+    const statsCols = document.querySelectorAll('#features .border-t .grid > div');
+    if (statsCols.length >= 4) {
+    const countriesEl = statsCols[0].querySelector('.text-4xl');
+    const clientsEl = statsCols[1].querySelector('.text-4xl');
+    const deliveryEl = statsCols[2].querySelector('.text-4xl');
+    const supportEl = statsCols[3].querySelector('.text-4xl');
 
-                    if (footerLogoImg) {
-                        footerLogoImg.src = logoPath;
-                        footerLogoImg.classList.remove('hidden');
-                    }
-                    if (footerLogoText) footerLogoText.classList.add('hidden');
-                } else {
-                    if (logoImg) logoImg.classList.add('hidden');
-                    if (logoText) logoText.classList.remove('hidden');
-
-                    if (footerLogoImg) footerLogoImg.classList.add('hidden');
-                    if (footerLogoText) footerLogoText.classList.remove('hidden');
-                }
-
-
-                // Favicon
-                if (data.website.favicon) {
-                    let favPath = data.website.favicon;
-                    if (favPath && !favPath.startsWith('http') && !favPath.startsWith('/')) {
-                        favPath = API_BASE + favPath;
-                    }
-                    const favEl = document.getElementById('favicon');
-                    if (favEl) favEl.href = favPath;
-                }
+    if (countriesEl) countriesEl.textContent = data.stats.countries || '150+';
+    if (clientsEl) clientsEl.textContent = data.stats.clients || '12K+';
+    if (deliveryEl) deliveryEl.textContent = data.stats.delivery || '99.2%';
+    if (supportEl) supportEl.textContent = data.stats.support || '24/7';
+    }
+    }
 
 
-                // Map
-                if (data.website.mapEmbed) {
-                    let mapUrl = data.website.mapEmbed;
-                    // Extract src from iframe tag if provided
-                    const match = mapUrl.match(/src="([^"]+)"/);
-                    if (match) {
-                        mapUrl = match[1];
-                    }
-                    document.getElementById('googleMap').src = mapUrl;
-                    document.getElementById('map-section').classList.remove('hidden');
-                } else {
-                    document.getElementById('map-section').classList.add('hidden');
-                }
-            }
+    // 5. Footer & Contact
+    if (data.contact) {
+    // Update Contact List
+    const contactList = document.querySelector('footer ul.space-y-4');
+    contactList.innerHTML = `
+    <li class="flex items-start gap-3">
+        <i class="fa-solid fa-phone mt-1 text-brand-yellow"></i>
+        <span>${data.contact.phone1}<br>${data.contact.phone2}</span>
+    </li>
+    <li class="flex items-start gap-3">
+        <i class="fa-solid fa-envelope mt-1 text-brand-yellow"></i>
+        <span>${data.contact.email1}<br>${data.contact.email2}</span>
+    </li>
+    `;
+    // Update Address
+    document.querySelector('footer p.text-sm.text-slate-400').textContent = data.contact.address;
 
-        } catch (error) {
-            console.error('Error fetching content:', error);
-        }
+    // Update Social Links
+    if (data.contact.social) {
+    const socialContainer = document.querySelector('footer .flex.gap-4');
+    socialContainer.innerHTML = `
+    <a href="${data.contact.social.facebook}"
+        class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-yellow hover:text-brand-blue transition-colors"><i
+            class="fa-brands fa-facebook-f"></i></a>
+    <a href="${data.contact.social.twitter}"
+        class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-yellow hover:text-brand-blue transition-colors"><i
+            class="fa-brands fa-twitter"></i></a>
+    <a href="${data.contact.social.linkedin}"
+        class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-yellow hover:text-brand-blue transition-colors"><i
+            class="fa-brands fa-linkedin-in"></i></a>
+    <a href="${data.contact.social.instagram}"
+        class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand-yellow hover:text-brand-blue transition-colors"><i
+            class="fa-brands fa-instagram"></i></a>
+    `;
+    }
+    }
+
+    // 6. Website Settings (Logo, Favicon, Map)
+    if (data.website) {
+    // Logo
+    const logoImg = document.getElementById('logoImg');
+    const logoText = document.getElementById('logoText');
+    const footerLogoImg = document.getElementById('footerLogoImg');
+    const footerLogoText = document.getElementById('footerLogoText');
+
+    if (data.website.logo) {
+    if (logoPath && !logoPath.startsWith('http') && !logoPath.startsWith('/')) {
+    // Ensure relative paths work if site is in subdirectory
+    logoPath = API_BASE + logoPath;
+    }
+    if (logoImg) {
+    logoImg.src = logoPath;
+    logoImg.classList.remove('hidden');
+    }
+    if (logoText) logoText.classList.add('hidden');
+
+    if (footerLogoImg) {
+    footerLogoImg.src = logoPath;
+    footerLogoImg.classList.remove('hidden');
+    }
+    if (footerLogoText) footerLogoText.classList.add('hidden');
+    } else {
+    if (logoImg) logoImg.classList.add('hidden');
+    if (logoText) logoText.classList.remove('hidden');
+
+    if (footerLogoImg) footerLogoImg.classList.add('hidden');
+    if (footerLogoText) footerLogoText.classList.remove('hidden');
+    }
+
+
+    // Favicon
+    if (data.website.favicon) {
+    let favPath = data.website.favicon;
+    if (favPath && !favPath.startsWith('http') && !favPath.startsWith('/')) {
+    favPath = API_BASE + favPath;
+    }
+    const favEl = document.getElementById('favicon');
+    if (favEl) favEl.href = favPath;
+    }
+
+
+    // Map
+    if (data.website.mapEmbed) {
+    let mapUrl = data.website.mapEmbed;
+    // Extract src from iframe tag if provided
+    const match = mapUrl.match(/src="([^"]+)"/);
+    if (match) {
+    mapUrl = match[1];
+    }
+    document.getElementById('googleMap').src = mapUrl;
+    document.getElementById('map-section').classList.remove('hidden');
+    } else {
+    document.getElementById('map-section').classList.add('hidden');
+    }
+    }
+
+    } catch (error) {
+    console.error('Error fetching content:', error);
+    }
     }
 
     let currentBgLayer = 1;
 
     function renderHeroSlide(index) {
-        const slide = slidesData[index];
-        const nextLayerNum = currentBgLayer === 1 ? 2 : 1;
-        const currentLayer = document.getElementById(`hero-bg-layer-${currentBgLayer}`);
-        const nextLayer = document.getElementById(`hero-bg-layer-${nextLayerNum}`);
-        const content = document.getElementById('hero-content');
+    const slide = slidesData[index];
+    const nextLayerNum = currentBgLayer === 1 ? 2 : 1;
+    const currentLayer = document.getElementById(`hero-bg-layer-${currentBgLayer}`);
+    const nextLayer = document.getElementById(`hero-bg-layer-${nextLayerNum}`);
+    const content = document.getElementById('hero-content');
 
-        // Resolve Path
-        let bgPath = slide.backgroundImage;
-        if (bgPath && !bgPath.startsWith('http') && !bgPath.startsWith('/')) {
-            bgPath = API_BASE + bgPath;
-        }
+    // Resolve Path
+    let bgPath = slide.backgroundImage;
+    if (bgPath && !bgPath.startsWith('http') && !bgPath.startsWith('/')) {
+    bgPath = API_BASE + bgPath;
+    }
 
 
-        // Prep next layer
+    // Prep next layer
 
-        // Prep next layer
-        nextLayer.style.backgroundImage = `url('${bgPath}')`;
-        nextLayer.classList.replace('fade-out', 'fade-in');
-        currentLayer.classList.replace('fade-in', 'fade-out');
+    // Prep next layer
+    nextLayer.style.backgroundImage = `url('${bgPath}')`;
+    nextLayer.classList.replace('fade-out', 'fade-in');
+    currentLayer.classList.replace('fade-in', 'fade-out');
 
-        // Toggle Layer Tracker
-        currentBgLayer = nextLayerNum;
+    // Toggle Layer Tracker
+    currentBgLayer = nextLayerNum;
 
-        // Animate Content
-        content.classList.remove('animate-fade-in-up');
-        void content.offsetWidth; // Trigger reflow for animation restart
+    // Animate Content
+    content.classList.remove('animate-fade-in-up');
+    void content.offsetWidth; // Trigger reflow for animation restart
 
-        document.getElementById('hero-subtitle').textContent = slide.subtitle;
-        document.getElementById('hero-title-line1').textContent = slide.titleLine1;
-        document.getElementById('hero-title-highlight').textContent = slide.titleHighlight;
-        document.getElementById('hero-description').textContent = slide.description;
+    document.getElementById('hero-subtitle').textContent = slide.subtitle;
+    document.getElementById('hero-title-line1').textContent = slide.titleLine1;
+    document.getElementById('hero-title-highlight').textContent = slide.titleHighlight;
+    document.getElementById('hero-description').textContent = slide.description;
 
-        content.classList.add('animate-fade-in-up');
+    content.classList.add('animate-fade-in-up');
     }
 
     function startSlider() {
-        if (autoSlideInterval) clearInterval(autoSlideInterval);
-        autoSlideInterval = setInterval(() => {
-            currentSlide = (currentSlide + 1) % slidesData.length;
-            renderHeroSlide(currentSlide);
-        }, 8000);
+    if (autoSlideInterval) clearInterval(autoSlideInterval);
+    autoSlideInterval = setInterval(() => {
+    currentSlide = (currentSlide + 1) % slidesData.length;
+    renderHeroSlide(currentSlide);
+    }, 8000);
     }
 
     function nextSlide() {
-        currentSlide = (currentSlide + 1) % slidesData.length;
-        renderHeroSlide(currentSlide);
-        startSlider(); // Reset timer
+    currentSlide = (currentSlide + 1) % slidesData.length;
+    renderHeroSlide(currentSlide);
+    startSlider(); // Reset timer
     }
 
     function prevSlide() {
-        currentSlide = (currentSlide - 1 + slidesData.length) % slidesData.length;
-        renderHeroSlide(currentSlide);
-        startSlider(); // Reset timer
+    currentSlide = (currentSlide - 1 + slidesData.length) % slidesData.length;
+    renderHeroSlide(currentSlide);
+    startSlider(); // Reset timer
     }
 
     // Enquiry Modal Logic
@@ -909,166 +938,184 @@
     let selectedCategory = '';
 
     function openEnquiryModal(type) {
-        enquiryType = type;
-        const modal = document.getElementById('enquiryModal');
-        const title = document.getElementById('modalTitle');
-        const step1 = document.getElementById('modalStep1');
-        const step2 = document.getElementById('modalStep2');
+    enquiryType = type;
+    const modal = document.getElementById('enquiryModal');
+    const title = document.getElementById('modalTitle');
+    const step1 = document.getElementById('modalStep1');
+    const step2 = document.getElementById('modalStep2');
 
-        // Reset
-        selectedCategory = '';
-        document.querySelectorAll('.category-tile').forEach(t => t.classList.remove('border-brand-yellow', 'bg-yellow-50'));
-        document.getElementById('enquiryForm').reset();
-        
-        step1.classList.remove('hidden');
-        step2.classList.add('hidden');
+    // Reset
+    selectedCategory = '';
+    document.querySelectorAll('.category-tile').forEach(t => t.classList.remove('border-brand-yellow', 'bg-yellow-50'));
+    document.getElementById('enquiryForm').reset();
 
-        if (type === 'vendor') {
-            title.textContent = "Let's do Business!";
-        } else {
-            title.textContent = "Select Service Category";
-        }
+    step1.classList.remove('hidden');
+    step2.classList.add('hidden');
 
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        document.body.style.overflow = 'hidden';
+    if (type === 'vendor') {
+    title.textContent = "Let's do Business!";
+    } else {
+    title.textContent = "Select Service Category";
+    }
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
     }
 
     function closeEnquiryModal() {
-        const modal = document.getElementById('enquiryModal');
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        document.body.style.overflow = 'auto';
+    const modal = document.getElementById('enquiryModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.style.overflow = 'auto';
     }
 
     function selectCategory(el, category) {
-        selectedCategory = category;
-        document.querySelectorAll('.category-tile').forEach(t => t.classList.remove('border-brand-yellow', 'bg-yellow-50'));
-        el.classList.add('border-brand-yellow', 'bg-yellow-50');
+    selectedCategory = category;
+    document.querySelectorAll('.category-tile').forEach(t => t.classList.remove('border-brand-yellow', 'bg-yellow-50'));
+    el.classList.add('border-brand-yellow', 'bg-yellow-50');
     }
 
     function nextStep() {
-        if (!selectedCategory) {
-            alert('Please select a category first.');
-            return;
-        }
-        document.getElementById('modalStep1').classList.add('hidden');
-        document.getElementById('modalStep2').classList.remove('hidden');
+    if (!selectedCategory) {
+    alert('Please select a category first.');
+    return;
+    }
+    document.getElementById('modalStep1').classList.add('hidden');
+    document.getElementById('modalStep2').classList.remove('hidden');
     }
 
     document.getElementById('enquiryForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const company = document.getElementById('eq_company').value;
-        const firstName = document.getElementById('eq_firstName').value;
-        const lastName = document.getElementById('eq_lastName').value;
-        const phone = document.getElementById('eq_phone').value;
-        const email = document.getElementById('eq_email').value;
-        const website = document.getElementById('eq_website').value;
+    e.preventDefault();
 
-        const typeLabel = enquiryType === 'logistics' ? 'Logistics Service Request' : 'Vendor/Partner Enquiry';
-        
-        let message = `*${typeLabel}*\n\n`;
-        message += `*Category:* ${selectedCategory}\n`;
-        message += `*Company:* ${company}\n`;
-        message += `*Contact:* ${firstName} ${lastName}\n`;
-        message += `*Phone:* ${phone}\n`;
-        message += `*Email:* ${email}\n`;
-        message += `*Website:* ${website}`;
+    const company = document.getElementById('eq_company').value;
+    const firstName = document.getElementById('eq_firstName').value;
+    const lastName = document.getElementById('eq_lastName').value;
+    const phone = document.getElementById('eq_phone').value;
+    const email = document.getElementById('eq_email').value;
+    const website = document.getElementById('eq_website').value;
 
-        const whatsappUrl = `https://wa.me/447570668047?text=${encodeURIComponent(message)}`;
-        window.open(whatsappUrl, '_blank');
-        closeEnquiryModal();
+    const typeLabel = enquiryType === 'logistics' ? 'Logistics Service Request' : 'Vendor/Partner Enquiry';
+
+    let message = `*${typeLabel}*\n\n`;
+    message += `*Category:* ${selectedCategory}\n`;
+    message += `*Company:* ${company}\n`;
+    message += `*Contact:* ${firstName} ${lastName}\n`;
+    message += `*Phone:* ${phone}\n`;
+    message += `*Email:* ${email}\n`;
+    message += `*Website:* ${website}`;
+
+    const whatsappUrl = `https://wa.me/447570668047?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+    closeEnquiryModal();
     });
 
     // Call on load
     fetchContent();
-</script>
+    </script>
 
-<!-- Enquiry Modal -->
-<div id="enquiryModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col animate-fade-in-up">
-        <!-- Header -->
-        <div class="px-6 py-4 border-b flex justify-between items-center bg-brand-blue text-white">
-            <h3 id="modalTitle" class="text-xl font-bold">Select Category</h3>
-            <button onclick="closeEnquiryModal()" class="text-white/80 hover:text-white transition-colors">
-                <i class="fa-solid fa-xmark text-2xl"></i>
-            </button>
-        </div>
-
-        <div class="p-6 overflow-y-auto flex-grow">
-            <!-- Step 1: Categories -->
-            <div id="modalStep1">
-                <p class="text-gray-500 mb-6 text-center">Please select the category that best fits your enquiry.</p>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    <div onclick="selectCategory(this, 'Air')" class="category-tile border-2 rounded-xl p-6 text-center cursor-pointer hover:border-brand-yellow transition-all flex flex-col items-center gap-3">
-                        <i class="fa-solid fa-plane-up text-3xl text-brand-blue"></i>
-                        <span class="font-bold">Air</span>
-                    </div>
-                    <div onclick="selectCategory(this, 'Sea')" class="category-tile border-2 rounded-xl p-6 text-center cursor-pointer hover:border-brand-yellow transition-all flex flex-col items-center gap-3">
-                        <i class="fa-solid fa-ship text-3xl text-brand-blue"></i>
-                        <span class="font-bold">Sea</span>
-                    </div>
-                    <div onclick="selectCategory(this, 'Road')" class="category-tile border-2 rounded-xl p-6 text-center cursor-pointer hover:border-brand-yellow transition-all flex flex-col items-center gap-3">
-                        <i class="fa-solid fa-truck-moving text-3xl text-brand-blue"></i>
-                        <span class="font-bold">Road</span>
-                    </div>
-                    <div onclick="selectCategory(this, 'Contract Logistics')" class="category-tile border-2 rounded-xl p-6 text-center cursor-pointer hover:border-brand-yellow transition-all flex flex-col items-center gap-3">
-                        <i class="fa-solid fa-warehouse text-3xl text-brand-blue"></i>
-                        <span class="font-bold">Contract Logistics</span>
-                    </div>
-                    <div onclick="selectCategory(this, 'General')" class="category-tile border-2 rounded-xl p-6 text-center cursor-pointer hover:border-brand-yellow transition-all flex flex-col items-center gap-3">
-                        <i class="fa-solid fa-cubes text-3xl text-brand-blue"></i>
-                        <span class="font-bold">General</span>
-                    </div>
-                </div>
-                <div class="mt-8 flex justify-center">
-                    <button onclick="nextStep()" class="bg-brand-yellow text-brand-blue px-12 py-3 rounded-lg font-bold hover:bg-yellow-400 transition-colors shadow-lg">
-                        Next <i class="fa-solid fa-arrow-right ml-2"></i>
-                    </button>
-                </div>
+    <!-- Enquiry Modal -->
+    <div id="enquiryModal"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] hidden items-center justify-center p-4">
+        <div
+            class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col animate-fade-in-up">
+            <!-- Header -->
+            <div class="px-6 py-4 border-b flex justify-between items-center bg-brand-blue text-white">
+                <h3 id="modalTitle" class="text-xl font-bold">Select Category</h3>
+                <button onclick="closeEnquiryModal()" class="text-white/80 hover:text-white transition-colors">
+                    <i class="fa-solid fa-xmark text-2xl"></i>
+                </button>
             </div>
 
-            <!-- Step 2: Form -->
-            <div id="modalStep2" class="hidden">
-                <form id="enquiryForm" class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-bold text-gray-700 mb-1">Company Name</label>
-                            <input type="text" id="eq_company" required placeholder="Your Company Ltd" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-yellow focus:outline-none">
+            <div class="p-6 overflow-y-auto flex-grow">
+                <!-- Step 1: Categories -->
+                <div id="modalStep1">
+                    <p class="text-gray-500 mb-6 text-center">Please select the category that best fits your enquiry.
+                    </p>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div onclick="selectCategory(this, 'Air')"
+                            class="category-tile border-2 rounded-xl p-6 text-center cursor-pointer hover:border-brand-yellow transition-all flex flex-col items-center gap-3">
+                            <i class="fa-solid fa-plane-up text-3xl text-brand-blue"></i>
+                            <span class="font-bold">Air</span>
                         </div>
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">First Name</label>
-                            <input type="text" id="eq_firstName" required placeholder="John" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-yellow focus:outline-none">
+                        <div onclick="selectCategory(this, 'Sea')"
+                            class="category-tile border-2 rounded-xl p-6 text-center cursor-pointer hover:border-brand-yellow transition-all flex flex-col items-center gap-3">
+                            <i class="fa-solid fa-ship text-3xl text-brand-blue"></i>
+                            <span class="font-bold">Sea</span>
                         </div>
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">Last Name</label>
-                            <input type="text" id="eq_lastName" required placeholder="Doe" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-yellow focus:outline-none">
+                        <div onclick="selectCategory(this, 'Road')"
+                            class="category-tile border-2 rounded-xl p-6 text-center cursor-pointer hover:border-brand-yellow transition-all flex flex-col items-center gap-3">
+                            <i class="fa-solid fa-truck-moving text-3xl text-brand-blue"></i>
+                            <span class="font-bold">Road</span>
                         </div>
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">Phone Number</label>
-                            <input type="tel" id="eq_phone" required placeholder="+1 234 567 890" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-yellow focus:outline-none">
+                        <div onclick="selectCategory(this, 'Contract Logistics')"
+                            class="category-tile border-2 rounded-xl p-6 text-center cursor-pointer hover:border-brand-yellow transition-all flex flex-col items-center gap-3">
+                            <i class="fa-solid fa-warehouse text-3xl text-brand-blue"></i>
+                            <span class="font-bold">Contract Logistics</span>
                         </div>
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">Email Address</label>
-                            <input type="email" id="eq_email" required placeholder="john@example.com" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-yellow focus:outline-none">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-bold text-gray-700 mb-1">Company Website</label>
-                            <input type="url" id="eq_website" placeholder="https://www.company.com" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-yellow focus:outline-none">
+                        <div onclick="selectCategory(this, 'General')"
+                            class="category-tile border-2 rounded-xl p-6 text-center cursor-pointer hover:border-brand-yellow transition-all flex flex-col items-center gap-3">
+                            <i class="fa-solid fa-cubes text-3xl text-brand-blue"></i>
+                            <span class="font-bold">General</span>
                         </div>
                     </div>
-                    <div class="mt-8 pt-4 border-t flex gap-4">
-                        <button type="button" onclick="document.getElementById('modalStep1').classList.remove('hidden'); document.getElementById('modalStep2').classList.add('hidden');" class="flex-1 py-3 border rounded-lg font-bold text-gray-600 hover:bg-gray-50">Back</button>
-                        <button type="submit" class="flex-1 py-3 bg-green-500 text-white rounded-lg font-bold hover:bg-green-600 transition-colors shadow-lg flex items-center justify-center gap-2">
-                            <i class="fa-brands fa-whatsapp text-xl"></i> Submit via WhatsApp
+                    <div class="mt-8 flex justify-center">
+                        <button onclick="nextStep()"
+                            class="bg-brand-yellow text-brand-blue px-12 py-3 rounded-lg font-bold hover:bg-yellow-400 transition-colors shadow-lg">
+                            Next <i class="fa-solid fa-arrow-right ml-2"></i>
                         </button>
                     </div>
-                </form>
+                </div>
+
+                <!-- Step 2: Form -->
+                <div id="modalStep2" class="hidden">
+                    <form id="enquiryForm" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Company Name</label>
+                                <input type="text" id="eq_company" required placeholder="Your Company Ltd"
+                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-yellow focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">First Name</label>
+                                <input type="text" id="eq_firstName" required placeholder="John"
+                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-yellow focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Last Name</label>
+                                <input type="text" id="eq_lastName" required placeholder="Doe"
+                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-yellow focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Phone Number</label>
+                                <input type="tel" id="eq_phone" required placeholder="+1 234 567 890"
+                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-yellow focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Email Address</label>
+                                <input type="email" id="eq_email" required placeholder="john@example.com"
+                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-yellow focus:outline-none">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Company Website</label>
+                                <input type="url" id="eq_website" placeholder="https://www.company.com"
+                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-yellow focus:outline-none">
+                            </div>
+                        </div>
+                        <div class="mt-8 pt-4 border-t flex gap-4">
+                            <button type="button"
+                                onclick="document.getElementById('modalStep1').classList.remove('hidden'); document.getElementById('modalStep2').classList.add('hidden');"
+                                class="flex-1 py-3 border rounded-lg font-bold text-gray-600 hover:bg-gray-50">Back</button>
+                            <button type="submit"
+                                class="flex-1 py-3 bg-green-500 text-white rounded-lg font-bold hover:bg-green-600 transition-colors shadow-lg flex items-center justify-center gap-2">
+                                <i class="fa-brands fa-whatsapp text-xl"></i> Submit via WhatsApp
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 </body>
 
 </html>

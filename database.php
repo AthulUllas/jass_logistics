@@ -1,45 +1,38 @@
 <?php
 /**
- * database.php — MySQL PDO Connection
- * Works on WAMP (local) and Hostinger (production)
+ * JASS Logistics - Production Database Connection
+ * Features: PDO, Exception Handling, Prepared Statement Optimization
  */
 
-// Load credentials from .env if it exists
-$envFile = __DIR__ . '/.env';
-if (file_exists($envFile)) {
-    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($lines as $line) {
-        if (strpos(trim($line), '#') === 0) continue;
-        if (str_contains($line, '=')) {
-            [$key, $value] = explode('=', $line, 2);
-            $_ENV[trim($key)] = trim($value);
-        }
-    }
-}
+require_once __DIR__ . '/api/bootstrap.php';
 
-define('DB_HOST',     $_ENV['DB_HOST']     ?? 'localhost');
-define('DB_NAME',     $_ENV['DB_NAME']     ?? 'logistics_db');
-define('DB_USER',     $_ENV['DB_USER']     ?? 'root');
-define('DB_PASS',     $_ENV['DB_PASS']     ?? '');
-define('DB_CHARSET',  'utf8mb4');
+$host = getenv('DB_HOST') ?: 'localhost';
+$dbname = getenv('DB_NAME') ?: 'logistics_db';
+$user = getenv('DB_USER') ?: 'root';
+$pass = getenv('DB_PASS') ?: '';
 
-function getDB(): PDO {
-    static $pdo = null;
-    if ($pdo === null) {
-        $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=' . DB_CHARSET;
-        $options = [
-            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES   => false,
-        ];
-        try {
-            $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
-        } catch (PDOException $e) {
-            http_response_code(500);
-            header('Content-Type: application/json');
-            echo json_encode(['error' => 'Database connection failed: ' . $e->getMessage()]);
-            exit;
-        }
-    }
-    return $pdo;
+try {
+    // Advanced PDO configuration for production
+    $dsn = "mysql:host=$host;dbname=$dbname;charset=utf8mb4";
+    $options = [
+        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION, // Throw exceptions on errors
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,       // Fetch associative arrays
+        PDO::ATTR_EMULATE_PREPARES   => false,                  // True prepared statements for security against SQLi
+        PDO::ATTR_PERSISTENT         => false                   // Persistent connections can cause issues on shared hosting
+    ];
+
+    $pdo = new PDO($dsn, $user, $pass, $options);
+
+} catch(PDOException $e) {
+    // Log the error securely without exposing details to the user
+    Logger::log("Database Connection Failed: " . $e->getMessage(), 'CRITICAL');
+    
+    header('Content-Type: application/json');
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'message' => 'Internal Server Error: Database connection failed. Please contact administrator.'
+    ]);
+    exit();
 }
+?>

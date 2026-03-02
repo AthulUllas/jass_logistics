@@ -1,20 +1,16 @@
 {
-    "functions": {
-        "api/*.php": {
-            "runtime": "vercel-php@0.7.2"
-        },
-        "index.php": {
-            "runtime": "vercel-php@0.7.2"
+    "version": 2,
+    "name": "jass-logistics-frontend",
+    "builds": [
+        {
+            "src": "**/*.{html,js,css,png,jpg,jpeg,svg,gif,webp,ico}",
+            "use": "@vercel/static"
         }
-    },
-    "routes": [
+    ],
+    "rewrites": [
         {
-            "src": "/api/(.*)",
-            "dest": "/api/$1.php"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "/index.php"
+            "source": "/(admin/?)",
+            "destination": "/admin/index.html"
         }
     ]
 }

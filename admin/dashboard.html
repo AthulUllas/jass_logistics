@@ -51,6 +51,10 @@
                     class="tab-link flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
                     <i class="fa-solid fa-globe"></i> Website Settings
                 </a>
+                <a href="javascript:void(0)" onclick="switchTab('stats')" data-tab="stats"
+                    class="tab-link flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+                    <i class="fa-solid fa-chart-line"></i> Statistics
+                </a>
                 <a href="javascript:void(0)" onclick="switchTab('security')" data-tab="security"
                     class="tab-link flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
                     <i class="fa-solid fa-shield-halved"></i> Security Settings
@@ -284,6 +288,41 @@
                     </div>
                 </div>
 
+                <!-- Tab: Stats -->
+                <div id="tab-stats" class="tab-content hidden">
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200">
+                        <h2 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line text-yellow-500"></i> Business Growth Statistics
+                        </h2>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Countries Served</label>
+                                <input type="text" id="statsCountries"
+                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+                                    placeholder="e.g. 150+">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Happy Clients</label>
+                                <input type="text" id="statsClients"
+                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+                                    placeholder="e.g. 12K+">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">On-Time Delivery</label>
+                                <input type="text" id="statsDelivery"
+                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+                                    placeholder="e.g. 99.2%">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Customer Support</label>
+                                <input type="text" id="statsSupport"
+                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+                                    placeholder="e.g. 24/7">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Tab: Security Settings -->
                 <div id="tab-security" class="tab-content hidden">
                     <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200">
@@ -328,11 +367,23 @@
         <span id="toastMessage">Changes saved successfully!</span>
     </div>
 
+    <script src="../public/config.js"></script>
     <script>
         let currentData = {};
+        let csrfToken = '';
 
-        // API Configuration — always use relative paths (works on WAMP & Hostinger)
-        const API_BASE = '';
+        async function fetchCSRFToken() {
+            try {
+                const response = await fetch(CONFIG.API_BASE + 'api/csrf_token.php');
+
+                const data = await response.json();
+                if (data.success) {
+                    csrfToken = data.csrf_token;
+                }
+            } catch (error) {
+                console.error("Failed to fetch CSRF token:", error);
+            }
+        }
 
         // Tab Switching Logic
         function switchTab(tabId) {
@@ -358,7 +409,8 @@
                 'services': 'What We Offer',
                 'about': 'About Us',
                 'features': 'Why Choose Us',
-                'contact': 'Website Settings'
+                'contact': 'Website Settings',
+                'stats': 'Business Growth Statistics'
             };
             document.getElementById('currentTabTitle').textContent = titles[tabId];
         }
@@ -381,7 +433,7 @@
             btn.disabled = true;
 
             try {
-                const response = await fetch('api/upload.php', {
+                const response = await fetch(CONFIG.API_BASE + 'api/upload.php', {
                     method: 'POST',
                     body: formData
                 });
@@ -417,7 +469,7 @@
         // Load Data
         async function loadData() {
             try {
-                const response = await fetch('api/content.php');
+                const response = await fetch(CONFIG.API_BASE + 'api/content.php');
                 currentData = await response.json();
 
 
@@ -470,6 +522,14 @@
                     document.getElementById('siteLogo').value = currentData.website.logo || '';
                     document.getElementById('siteFavicon').value = currentData.website.favicon || '';
                     document.getElementById('siteMap').value = currentData.website.mapEmbed || '';
+                }
+
+                // Populate Stats
+                if (currentData.stats) {
+                    document.getElementById('statsCountries').value = currentData.stats.countries || '';
+                    document.getElementById('statsClients').value = currentData.stats.clients || '';
+                    document.getElementById('statsDelivery').value = currentData.stats.delivery || '';
+                    document.getElementById('statsSupport').value = currentData.stats.support || '';
                 }
 
             } catch (error) {
@@ -634,7 +694,12 @@
                     vision: document.getElementById('aboutVision').value
                 },
                 features: features,
-                stats: currentData.stats,
+                stats: {
+                    countries: document.getElementById('statsCountries').value,
+                    clients: document.getElementById('statsClients').value,
+                    delivery: document.getElementById('statsDelivery').value,
+                    support: document.getElementById('statsSupport').value
+                },
                 contact: {
                     address: document.getElementById('contactAddress').value,
                     phone1: document.getElementById('contactPhone1').value,
@@ -656,9 +721,12 @@
             };
 
             try {
-                const response = await fetch('api/content.php', {
+                const response = await fetch(CONFIG.API_BASE + 'api/content.php', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken
+                    },
                     body: JSON.stringify(newData)
                 });
 
@@ -687,8 +755,8 @@
         }
 
         // Event Listeners
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            localStorage.removeItem('adminToken');
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await fetch('../api/logout.php');
             window.location.href = 'index.html';
         });
 
@@ -697,10 +765,14 @@
         // Admin Settings Logic
         async function loadAdminSettings() {
             try {
-                const response = await fetch('api/admin_settings.php');
+                const response = await fetch('../api/admin_settings.php');
+                if (response.status === 401) {
+                    window.location.href = 'index.html'; // Kick unsigned user
+                    return;
+                }
                 const data = await response.json();
 
-                document.getElementById('adminUsername').value = data.username;
+                document.getElementById('adminUsername').value = data.username || '';
             } catch (error) {
                 console.error('Error loading admin settings:', error);
             }
@@ -722,9 +794,12 @@
             }
 
             try {
-                const response = await fetch('api/admin_settings.php', {
+                const response = await fetch('../api/admin_settings.php', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken
+                    },
                     body: JSON.stringify({ username, password })
                 });
 
@@ -744,8 +819,11 @@
         }
 
         // Init
-        loadData();
-        loadAdminSettings();
+        (async () => {
+            await fetchCSRFToken();
+            await loadAdminSettings(); // Trigger fast redirect if unauthorised
+            loadData();
+        })();
     </script>
 </body>
 

@@ -61,6 +61,7 @@
         </div>
     </div>
 
+    <script src="../public/config.js"></script>
     <script>
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -71,16 +72,16 @@
             errorMsg.textContent = '';
 
             try {
-                const response = await fetch('/api/login.php', {
+                const response = await fetch(CONFIG.API_BASE + 'api/login.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
                 });
 
+
                 const data = await response.json();
 
                 if (response.ok && data.success) {
-                    localStorage.setItem('adminToken', data.token);
                     window.location.href = 'dashboard.html';
                 } else {
                     errorMsg.textContent = data.message || 'Invalid credentials. Please try again.';

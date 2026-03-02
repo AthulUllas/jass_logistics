@@ -1,100 +1,67 @@
-# 🚀 Deployment Guide — Hostinger Hosting
+# 🚀 JASS Logistics — Hostinger Deployment Guide
 
-## What Changed
-The website backend has been **completely migrated from Node.js to PHP + MySQL**.  
-No Node.js server is needed anymore. Everything runs on PHP (which Hostinger supports natively).
+This guide ensures your website is successfully hosted on Hostinger with **zero data loss** and **real-time updates** from the admin panel.
 
 ---
 
-## Files to Upload
+## ✅ Step 1 — Upload Your Files
+Upload **all files** from this folder to your Hostinger `public_html` directory via File Manager or FTP.
 
-Upload **all files** to your Hostinger `public_html` folder **except**:
-- `node_modules/` ← **Do NOT upload** (very large, not needed)
-- `start_server.bat`, `startup.vbs` ← Not needed on Hostinger
-
-Everything else should be uploaded.
+**This is a clean, optimized structure:**
+- `index.html` (Main Website Frontend)
+- `database.php` & `.env` (Database Connection)
+- `db_setup.php` & `setup.sql` (Database Builders)
+- `api/` (Dynamic PHP Backend)
+- `admin/` (Content Management Panel)
 
 ---
 
-## Step-by-Step Hostinger Setup
+## 💾 Step 2 — Create your MySQL Database
+1. Log in to your **Hostinger hPanel**.
+2. Go to **Databases → MySQL Databases**.
+3. Create a new database (e.g., `u123456789_logistics`).
+4. Create a database user and a strong password.
+5. **Important:** Note down the **DB Name**, **DB User**, and **DB Password**.
 
-### Step 1 — Create MySQL Database
-1. Log in to **Hostinger hPanel**
-2. Go to **Databases → MySQL Databases**
-3. Create a new database, e.g. `u123456789_logistics`
-4. Create a database user with a strong password
-5. Assign the user to the database (All Privileges)
+---
 
-### Step 2 — Update `.env` File
-Open `.env` in your uploaded files and fill in your Hostinger MySQL credentials:
+## ⚙️ Step 3 — Configure the `.env` File
+In your Hostinger File Manager, edit the `.env` file and fill in the details you just created:
 
-```
+```env
 DB_HOST=localhost
 DB_NAME=u123456789_logistics
 DB_USER=u123456789_admin
 DB_PASS=YourSecurePassword
 ```
-
-> You can find exact values in **hPanel → MySQL Databases**
-
-### Step 3 — Run the Database Setup Script
-Once uploaded, open in your browser:
-```
-https://yourdomain.com/db_setup.php
-```
-
-You should see green checkmarks confirming tables were created and data was migrated.
-
-### Step 4 — Delete db_setup.php ⚠️
-**IMPORTANT:** After setup is successful, delete `db_setup.php` from your hosting to prevent unauthorized access.
-
-In hPanel → File Manager, find and delete `db_setup.php`.
-
-### Step 5 — Test Your Website
-- Visit `https://yourdomain.com/` — the homepage should load with all content
-- Visit `https://yourdomain.com/admin/` — login with `admin` / `admin123`
-- Change the admin password immediately via **Security Settings** in the admin panel
+*(On Hostinger, `DB_HOST` is usually `localhost`)*
 
 ---
 
-## Folder Structure After Upload
-
-```
-public_html/
-├── index.php           ← Main website (PHP)
-├── database.php        ← MySQL connection
-├── db_setup.php        ← DELETE after running once
-├── setup.sql           ← Reference schema (not needed at runtime)
-├── .htaccess           ← URL routing rules
-├── .env                ← MySQL credentials ← UPDATE THIS
-├── api/
-│   ├── content.php     ← Site content API
-│   ├── upload.php      ← Image upload API
-│   ├── login.php       ← Admin login API
-│   └── admin_settings.php ← Admin credentials API
-├── admin/
-│   ├── index.html      ← Admin login page
-│   └── dashboard.html  ← Admin control panel
-├── uploads/            ← Uploaded images stored here
-└── public/             ← Static assets (logo, etc.)
-```
+## ⚡ Step 4 — Run the Migration (Zero Data Loss)
+This step moves your existing data from `data.json` into the MySQL database.
+1. Open your browser and visit: `https://yourdomain.com/db_setup.php`
+2. You should see a list of green checkmarks showing tables were created and content was migrated.
+3. **⚠️ Security Warning:** After you see the success message, **DELETE** `db_setup.php` from your File Manager immediately.
 
 ---
 
-## Troubleshooting
-
-| Problem | Solution |
-|---------|----------|
-| Blank page / 500 error | Check `.env` DB credentials are correct |
-| "Database connection failed" | Ensure DB name, user, and password match hPanel |
-| Admin login fails | Run `db_setup.php` to seed admin credentials |
-| Images not loading | Check `uploads/` folder has 755 permissions in File Manager |
-| `.htaccess` not working | Ensure Hostinger has mod_rewrite enabled (it does by default) |
+## 🔐 Step 5 — Access the Admin Panel
+- **Login URL:** `https://yourdomain.com/admin/`
+- **Default Username:** `admin`
+- **Default Password:** `admin123`
+*(Change your password immediately in the **Security Settings** tab of the dashboard)*
 
 ---
 
-## Admin Credentials (Default)
-- **Username:** `admin`
-- **Password:** `admin123`
+## 🛠️ Troubleshooting
+- **500 Error:** Double-check your `.env` file for typos in the database name or password.
+- **Images not loading:** Ensure the `uploads/` folder is present and has `755` permissions.
+- **Admin login fails:** Ensure you ran `db_setup.php` first.
 
-> ⚠️ Change these immediately after first login via Admin Panel → Security Settings
+---
+
+### Why this is the "Best Service" for you:
+- **No Node.js needed**: PHP runs natively and faster on Hostinger.
+- **Persistent Data**: SQL is industry-standard and won't reset like JSON might if permissions change.
+- **Fast Updates**: Changes in the admin panel are saved instantly to the database.
