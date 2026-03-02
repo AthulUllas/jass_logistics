@@ -1,12 +1,8 @@
 <?php
 /**
- * JASS Logistics - CSRF Token Endpoint
+ * JASS Logistics - CSRF Generator v2
  */
 require_once __DIR__ . '/bootstrap.php';
 require_once __DIR__ . '/CSRF.php';
 
-echo json_encode([
-    'success' => true,
-    'csrf_token' => CSRF::generateToken()
-]);
-?>
+sendResponse(true, 'Token generated', ['csrf_token' => CSRF::generateToken()]);

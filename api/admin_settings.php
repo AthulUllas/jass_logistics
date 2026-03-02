@@ -1,71 +1,39 @@
 <?php
 /**
- * JASS Logistics - Admin Settings (Production)
- * Requires Session Auth & CSRF token to update credentials safely.
+ * JASS Logistics - Admin Settings v2
  */
-require_once __DIR__ . '/../database.php';
+require_once __DIR__ . '/bootstrap.php';
 require_once __DIR__ . '/CSRF.php';
 
-// Authentication Check
 if (empty($_SESSION['admin_logged_in'])) {
-    http_response_code(401);
-    Logger::log("Unauthorized admin settings access attempt.", 'WARNING');
-    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
-    exit;
+    sendResponse(false, 'Unauthorized', [], 401);
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    try {
-        $stmt = $pdo->prepare("SELECT username FROM admin_users WHERE id = ? LIMIT 1");
-        $stmt->execute([$_SESSION['admin_id']]);
-        $user = $stmt->fetch();
+    sendResponse(true, 'Data fetched', ['username' => $_SESSION['admin_username']]);
+}
 
-        if ($user) {
-            echo json_encode(['username' => htmlspecialchars($user['username'])]);
-        } else {
-            http_response_code(404);
-            echo json_encode(['message' => 'Admin user not found']);
-        }
-    } catch(PDOException $e) {
-        Logger::log("Fetch Admin Error: " . $e->getMessage(), 'ERROR');
-        http_response_code(500);
-        echo json_encode(['success' => false, 'message' => 'Database error']);
-    }
-} 
 elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    
-    // CSRF Protection
     CSRF::checkOrDie();
+    $input = json_decode(file_get_contents('php://input'), true);
+    $username = trim($input['username'] ?? '');
+    $password = trim($input['password'] ?? '');
 
-    $inputJSON = file_get_contents('php://input');
-    $input = json_decode($inputJSON, true);
-
-    $newUsername = trim($input['username'] ?? '');
-    $newPassword = trim($input['password'] ?? '');
-
-    if (empty($newUsername) || empty($newPassword)) {
-        http_response_code(400);
-        echo json_encode(['success' => false, 'message' => 'Username and password cannot be empty.']);
-        exit;
-    }
-
-    // High cost bcrypt hashing for production
-    $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT, ['cost' => 12]);
+    if (empty($username)) sendResponse(false, 'Username required', [], 400);
 
     try {
-        $stmt = $pdo->prepare("UPDATE admin_users SET username = ?, password = ? WHERE id = ?");
-        $stmt->execute([$newUsername, $hashedPassword, $_SESSION['admin_id']]);
-
-        // Update session tracking
-        $_SESSION['admin_username'] = $newUsername;
+        if (!empty($password)) {
+            $hash = password_hash($password, PASSWORD_DEFAULT);
+            $stmt = $pdo->prepare("UPDATE admin_users SET username = ?, password = ? WHERE id = ?");
+            $stmt->execute([$username, $hash, $_SESSION['admin_id']]);
+        } else {
+            $stmt = $pdo->prepare("UPDATE admin_users SET username = ? WHERE id = ?");
+            $stmt->execute([$username, $_SESSION['admin_id']]);
+        }
         
-        Logger::log("Admin credentials updated for ID: " . $_SESSION['admin_id'], 'INFO');
-        echo json_encode(['success' => true, 'message' => 'Credentials updated successfully.']);
-
-    } catch(PDOException $e) {
-        Logger::log("Update Admin Error: " . $e->getMessage(), 'CRITICAL');
-        http_response_code(500);
-        echo json_encode(['success' => false, 'message' => 'Internal Server Error']);
+        $_SESSION['admin_username'] = $username;
+        sendResponse(true, 'Settings updated successfully');
+    } catch (Exception $e) {
+        sendResponse(false, 'Database error', [], 500);
     }
 }
-?>

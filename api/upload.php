@@ -1,81 +1,43 @@
 <?php
 /**
- * JASS Logistics - File Upload API (Production)
- * Secure image upload handling.
+ * JASS Logistics - File Upload API v2
  */
-require_once __DIR__ . '/../database.php';
-// We do not require CSRF token here because the frontend usually sends uploads via FormData 
-// without easily appending CSRF payload unless specifically programmed.
-// However, we MUST restrict to active Sessions.
+require_once __DIR__ . '/bootstrap.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Method Not Allowed']);
-    exit;
+    sendResponse(false, 'Method Not Allowed', [], 405);
 }
 
-// Ensure user is logged in
 if (empty($_SESSION['admin_logged_in'])) {
-    Logger::log("Unauthorized upload attempt blocked.", 'WARNING');
-    http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
-    exit;
+    sendResponse(false, 'Unauthorized', [], 401);
 }
 
 if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'No image uploaded or upload error occurred.']);
-    exit;
+    sendResponse(false, 'No image uploaded or upload error occurred.', [], 400);
 }
 
 $file = $_FILES['image'];
-
-// Stricter file type validation
-$finfo = finfo_open(FILEINFO_MIME_TYPE);
-$mimeType = finfo_file($finfo, $file['tmp_name']);
-finfo_close($finfo);
-
-$allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-$allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-
 $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+$allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
-if (!in_array($mimeType, $allowedMimeTypes) || !in_array($extension, $allowedExtensions)) {
-    Logger::log("Invalid file upload attempt (MIME: $mimeType, EXT: $extension)", 'WARNING');
-    http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Invalid file type. Only JPG, PNG, GIF, and WEBP are allowed.']);
-    exit;
+if (!in_array($extension, $allowed)) {
+    sendResponse(false, 'Invalid file type. Only JPG, PNG, GIF, and WEBP allowed.', [], 400);
 }
 
-$maxSize = 5 * 1024 * 1024; // 5MB
-if ($file['size'] > $maxSize) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'File size exceeds 5MB limit.']);
-    exit;
+if ($file['size'] > MAX_UPLOAD_SIZE) {
+    sendResponse(false, 'File too large (Max 5MB)', [], 400);
 }
 
-// Generate highly unique filename
+if (!is_dir(UPLOAD_DIR)) {
+    mkdir(UPLOAD_DIR, 0755, true);
+}
+
 $filename = bin2hex(random_bytes(16)) . '-' . time() . '.' . $extension;
-
-$uploadDir = __DIR__ . '/../uploads/';
-if (!is_dir($uploadDir)) {
-    if (!mkdir($uploadDir, 0755, true)) {
-        Logger::log("Failed to create upload directory.", 'CRITICAL');
-        http_response_code(500);
-        echo json_encode(['success' => false, 'message' => 'Server error creating directory.']);
-        exit;
-    }
-}
-
-$destination = $uploadDir . $filename;
+$destination = UPLOAD_DIR . $filename;
 
 if (move_uploaded_file($file['tmp_name'], $destination)) {
-    Logger::log("File uploaded successfully: $filename by Admin ID {$_SESSION['admin_id']}", 'INFO');
-    $relativePath = 'uploads/' . $filename;
-    echo json_encode(['success' => true, 'filePath' => $relativePath]);
+    Logger::log("Uploaded: $filename", 'INFO');
+    sendResponse(true, 'File uploaded', ['filePath' => 'uploads/' . $filename]);
 } else {
-    Logger::log("move_uploaded_file failed for $filename", 'CRITICAL');
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Failed to save uploaded file on server.']);
+    sendResponse(false, 'Failed to save file.', [], 500);
 }
-?>

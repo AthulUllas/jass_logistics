@@ -4,357 +4,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - JASS Logistics</title>
+    <title>JASS Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        // Auth is now managed via secure session cookies in bootstrap.php
-    </script>
 </head>
 
-<body class="bg-slate-100 font-sans text-slate-800">
-
-    <div class="flex h-screen overflow-hidden">
+<body class="bg-slate-50 min-h-screen">
+    <div class="flex flex-col md:flex-row min-h-screen">
         <!-- Sidebar -->
-        <aside class="w-64 bg-slate-900 text-white flex flex-col">
-            <div class="p-6 border-b border-slate-700">
-                <div class="flex items-center gap-2">
-                    <div
-                        class="w-8 h-8 bg-yellow-500 rounded flex items-center justify-center text-slate-900 font-bold">
-                        <i class="fa-solid fa-truck-fast"></i>
-                    </div>
-                    <span class="text-xl font-bold">Admin<span class="text-yellow-500">Panel</span></span>
+        <aside class="w-full md:w-64 bg-slate-900 text-slate-400 p-6 space-y-8">
+            <div class="flex items-center gap-3 text-white mb-10">
+                <div class="w-10 h-10 bg-yellow-500 rounded flex items-center justify-center text-slate-900 font-bold">J
                 </div>
+                <span class="font-bold text-xl tracking-tight">JASS Admin</span>
             </div>
 
-            <nav class="flex-1 p-4 space-y-2 overflow-y-auto" id="sidebarLinks">
-                <a href="javascript:void(0)" onclick="switchTab('hero')" data-tab="hero"
-                    class="tab-link flex items-center gap-3 px-4 py-3 bg-yellow-500 text-slate-900 rounded-lg font-medium">
+            <nav class="space-y-1">
+                <a href="#" onclick="switchTab('hero')"
+                    class="tab-link flex items-center gap-3 px-4 py-3 rounded-lg transition-all bg-yellow-500 text-slate-900 font-medium"
+                    data-tab="hero">
                     <i class="fa-solid fa-images"></i> Hero Slider
                 </a>
-                <a href="javascript:void(0)" onclick="switchTab('services')" data-tab="services"
-                    class="tab-link flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
-                    <i class="fa-solid fa-handshake"></i> Services
+                <a href="#" onclick="switchTab('services')"
+                    class="tab-link flex items-center gap-3 px-4 py-3 rounded-lg transition-all hover:bg-slate-800 hover:text-white"
+                    data-tab="services">
+                    <i class="fa-solid fa-truck-fast"></i> Services
                 </a>
-                <a href="javascript:void(0)" onclick="switchTab('about')" data-tab="about"
-                    class="tab-link flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+                <a href="#" onclick="switchTab('about')"
+                    class="tab-link flex items-center gap-3 px-4 py-3 rounded-lg transition-all hover:bg-slate-800 hover:text-white"
+                    data-tab="about">
                     <i class="fa-solid fa-circle-info"></i> About Us
                 </a>
-                <a href="javascript:void(0)" onclick="switchTab('features')" data-tab="features"
-                    class="tab-link flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
-                    <i class="fa-solid fa-star"></i> Features
+                <a href="#" onclick="switchTab('features')"
+                    class="tab-link flex items-center gap-3 px-4 py-3 rounded-lg transition-all hover:bg-slate-800 hover:text-white"
+                    data-tab="features">
+                    <i class="fa-solid fa-star"></i> Why Us
                 </a>
-                <a href="javascript:void(0)" onclick="switchTab('contact')" data-tab="contact"
-                    class="tab-link flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
-                    <i class="fa-solid fa-globe"></i> Website Settings
-                </a>
-                <a href="javascript:void(0)" onclick="switchTab('stats')" data-tab="stats"
-                    class="tab-link flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+                <a href="#" onclick="switchTab('stats')"
+                    class="tab-link flex items-center gap-3 px-4 py-3 rounded-lg transition-all hover:bg-slate-800 hover:text-white"
+                    data-tab="stats">
                     <i class="fa-solid fa-chart-line"></i> Statistics
                 </a>
-                <a href="javascript:void(0)" onclick="switchTab('security')" data-tab="security"
-                    class="tab-link flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
-                    <i class="fa-solid fa-shield-halved"></i> Security Settings
+                <a href="#" onclick="switchTab('contact')"
+                    class="tab-link flex items-center gap-3 px-4 py-3 rounded-lg transition-all hover:bg-slate-800 hover:text-white"
+                    data-tab="contact">
+                    <i class="fa-solid fa-gears"></i> Site Settings
                 </a>
-                <div class="pt-4 border-t border-slate-700">
-                    <a href="../" target="_blank"
-                        class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
-                        <i class="fa-solid fa-external-link"></i> View Website
-                    </a>
-                </div>
             </nav>
 
-            <div class="p-4 border-t border-slate-700">
+            <div class="pt-10 border-t border-slate-800">
                 <button id="logoutBtn"
-                    class="flex items-center gap-3 px-4 py-3 text-red-400 hover:text-red-300 hover:bg-slate-800 rounded-lg w-full transition-colors">
-                    <i class="fa-solid fa-sign-out-alt"></i> Logout
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg w-full text-left hover:bg-red-500/10 hover:text-red-500 transition-all">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
                 </button>
             </div>
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto bg-slate-100 p-8">
-            <header class="flex justify-between items-center mb-8">
-                <div>
-                    <h1 class="text-3xl font-bold text-slate-800" id="currentTabTitle">Hero Slider</h1>
-                    <p class="text-slate-500 text-sm">Manage your website content efficiently</p>
-                </div>
-                <button id="saveBtn"
-                    class="bg-yellow-500 text-slate-900 px-6 py-2 rounded-lg font-bold hover:bg-yellow-400 transition-colors shadow-lg flex items-center gap-2">
-                    <i class="fa-solid fa-save"></i> Save All Changes
-                </button>
-            </header>
+        <main class="flex-1 p-4 md:p-10 lg:p-12 overflow-y-auto">
+            <div class="max-w-4xl mx-auto">
+                <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+                    <div>
+                        <h1 id="currentTabTitle" class="text-3xl font-bold text-slate-900">Hero Slider</h1>
+                        <p class="text-slate-500 mt-1">Manage your website's primary content sections.</p>
+                    </div>
+                    <button id="saveBtn"
+                        class="bg-slate-900 text-white px-8 py-3 rounded-lg font-bold hover:bg-slate-800 transition-all shadow-lg flex items-center gap-2">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                    </button>
+                </header>
 
-            <div class="max-w-4xl mx-auto space-y-8 pb-12">
-
-                <!-- Tab: Hero Slider -->
-                <div id="tab-hero" class="tab-content">
-                    <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200">
-                        <div class="flex justify-between items-center mb-4 border-b pb-2">
-                            <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                                <i class="fa-solid fa-images text-yellow-500"></i> Hero Slider Slides
-                            </h2>
-                            <button onclick="addSlide()"
-                                class="text-sm bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1 rounded flex items-center gap-1 transition-colors">
-                                <i class="fa-solid fa-plus text-xs"></i> Add Slide
+                <!-- Tabs Container -->
+                <div id="tabsContent">
+                    <!-- Tab: Hero Slider -->
+                    <div id="tab-hero" class="tab-content space-y-6">
+                        <div
+                            class="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border border-slate-100 mb-4">
+                            <span class="text-sm font-medium text-slate-600">Slider Images</span>
+                            <button onclick="addHeroSlideUI()"
+                                class="text-yellow-600 hover:text-yellow-700 font-bold text-sm">
+                                <i class="fa-solid fa-plus-circle mr-1"></i> Add Slide
                             </button>
                         </div>
-                        <div id="slidesContainer" class="space-y-6">
-                            <!-- Slides will be injected here -->
-                        </div>
+                        <div id="heroSlidesContainer" class="space-y-4"></div>
                     </div>
-                </div>
 
-                <!-- Tab: Services -->
-                <div id="tab-services" class="tab-content hidden">
-                    <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200">
-                        <div class="flex justify-between items-center mb-4 border-b pb-2">
-                            <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                                <i class="fa-solid fa-handshake text-yellow-500"></i> What We Offer
-                            </h2>
-                            <button onclick="addService()"
-                                class="text-sm bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1 rounded flex items-center gap-1 transition-colors">
-                                <i class="fa-solid fa-plus text-xs"></i> Add Service
+                    <!-- Tab: Services -->
+                    <div id="tab-services" class="tab-content hidden space-y-6">
+                        <div
+                            class="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border border-slate-100 mb-4">
+                            <span class="text-sm font-medium text-slate-600">What We Offer</span>
+                            <button onclick="addServiceUI()"
+                                class="text-yellow-600 hover:text-yellow-700 font-bold text-sm">
+                                <i class="fa-solid fa-plus-circle mr-1"></i> Add Service
                             </button>
                         </div>
-                        <div id="servicesContainer" class="grid md:grid-cols-2 gap-4">
-                            <!-- Services will be injected here -->
-                        </div>
+                        <div id="servicesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                     </div>
-                </div>
 
-                <!-- Tab: About -->
-                <div id="tab-about" class="tab-content hidden">
-                    <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200">
-                        <h2 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2 flex items-center gap-2">
-                            <i class="fa-solid fa-circle-info text-yellow-500"></i> About Us Content
-                        </h2>
-                        <div class="space-y-4">
+                    <!-- Tab: About -->
+                    <div id="tab-about" class="tab-content hidden space-y-6">
+                        <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-100 space-y-6">
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Who We Are</label>
-                                <textarea id="aboutWhoWeAre" rows="8"
-                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"></textarea>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Who We Are</label>
+                                <textarea id="aboutWhoWeAre"
+                                    class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+                                    rows="4"></textarea>
                             </div>
-                            <div class="grid md:grid-cols-2 gap-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Our Mission</label>
-                                    <textarea id="aboutMission" rows="6"
-                                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"></textarea>
+                                    <label class="block text-sm font-semibold text-slate-700 mb-2">Our Mission</label>
+                                    <textarea id="aboutMission"
+                                        class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+                                        rows="4"></textarea>
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Our Vision</label>
-                                    <textarea id="aboutVision" rows="6"
-                                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"></textarea>
+                                    <label class="block text-sm font-semibold text-slate-700 mb-2">Our Vision</label>
+                                    <textarea id="aboutVision"
+                                        class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
+                                        rows="4"></textarea>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Tab: Features -->
-                <div id="tab-features" class="tab-content hidden">
-                    <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200">
-                        <div class="flex justify-between items-center mb-4 border-b pb-2">
-                            <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                                <i class="fa-solid fa-star text-yellow-500"></i> Why Choose Us Features
-                            </h2>
-                            <button onclick="addFeature()"
-                                class="text-sm bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1 rounded flex items-center gap-1 transition-colors">
-                                <i class="fa-solid fa-plus text-xs"></i> Add Feature
+                    <!-- Tab: Features -->
+                    <div id="tab-features" class="tab-content hidden space-y-6">
+                        <div
+                            class="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border border-slate-100 mb-4">
+                            <span class="text-sm font-medium text-slate-600">Core Features</span>
+                            <button onclick="addFeatureUI()"
+                                class="text-yellow-600 hover:text-yellow-700 font-bold text-sm">
+                                <i class="fa-solid fa-plus-circle mr-1"></i> Add Feature
                             </button>
                         </div>
-                        <div id="featuresContainer" class="space-y-4">
-                            <!-- Features will be injected here -->
-                        </div>
+                        <div id="featuresContainer" class="space-y-4"></div>
                     </div>
-                </div>
 
-                <!-- Tab: Contact -->
-                <div id="tab-contact" class="tab-content hidden">
-                    <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200">
-                        <h2 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2 flex items-center gap-2">
-                            <i class="fa-solid fa-globe text-yellow-500"></i> Website Section
-                        </h2>
-                        <div class="grid md:grid-cols-2 gap-6 mb-8">
-                            <div class="space-y-4">
-                                <h3 class="font-bold text-slate-700 underline">General Identity</h3>
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Website Logo</label>
-                                    <div class="flex gap-2">
-                                        <input type="text" id="siteLogo"
-                                            class="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
-                                            placeholder="URL to logo">
-                                        <div class="relative">
-                                            <input type="file" class="hidden" accept="image/*"
-                                                onchange="uploadFile(this)">
-                                            <button onclick="triggerUpload(this)"
-                                                class="bg-slate-800 text-white px-3 py-2 rounded hover:bg-slate-700 transition-colors">
-                                                <i class="fa-solid fa-upload"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Favicon</label>
-                                    <div class="flex gap-2">
-                                        <input type="text" id="siteFavicon"
-                                            class="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
-                                            placeholder="URL to favicon">
-                                        <div class="relative">
-                                            <input type="file" class="hidden" accept="image/*"
-                                                onchange="uploadFile(this)">
-                                            <button onclick="triggerUpload(this)"
-                                                class="bg-slate-800 text-white px-3 py-2 rounded hover:bg-slate-700 transition-colors">
-                                                <i class="fa-solid fa-upload"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Google Map Embed
-                                        Link</label>
-                                    <textarea id="siteMap" rows="3"
-                                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
-                                        placeholder="Paste iframe src URL here"></textarea>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="grid md:grid-cols-2 gap-6">
-                            <div class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Address</label>
-                                    <input type="text" id="contactAddress"
-                                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none">
-                                </div>
-                                <div class="grid grid-cols-2 gap-2">
-                                    <div>
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Phone 1</label>
-                                        <input type="text" id="contactPhone1"
-                                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Phone 2</label>
-                                        <input type="text" id="contactPhone2"
-                                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none">
-                                    </div>
-                                </div>
-                                <div class="grid grid-cols-2 gap-2">
-                                    <div>
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Email 1</label>
-                                        <input type="text" id="contactEmail1"
-                                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Email 2</label>
-                                        <input type="text" id="contactEmail2"
-                                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="space-y-4">
-                                <h3 class="font-bold text-slate-700 underline">Social Links</h3>
-                                <div class="grid grid-cols-1 gap-3">
-                                    <div class="flex items-center gap-2">
-                                        <div class="w-8 text-center text-blue-600"><i class="fa-brands fa-facebook"></i>
-                                        </div>
-                                        <input type="text" id="socialFacebook" placeholder="Facebook URL"
-                                            class="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none">
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <div class="w-8 text-center text-sky-400"><i class="fa-brands fa-twitter"></i>
-                                        </div>
-                                        <input type="text" id="socialTwitter" placeholder="Twitter URL"
-                                            class="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none">
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <div class="w-8 text-center text-blue-800"><i class="fa-brands fa-linkedin"></i>
-                                        </div>
-                                        <input type="text" id="socialLinkedin" placeholder="LinkedIn URL"
-                                            class="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none">
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <div class="w-8 text-center text-pink-600"><i
-                                                class="fa-brands fa-instagram"></i></div>
-                                        <input type="text" id="socialInstagram" placeholder="Instagram URL"
-                                            class="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tab: Stats -->
-                <div id="tab-stats" class="tab-content hidden">
-                    <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200">
-                        <h2 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2 flex items-center gap-2">
-                            <i class="fa-solid fa-chart-line text-yellow-500"></i> Business Growth Statistics
-                        </h2>
-                        <div class="grid md:grid-cols-2 gap-4">
+                    <!-- Tab: Stats -->
+                    <div id="tab-stats" class="tab-content hidden">
+                        <div
+                            class="bg-white p-8 rounded-xl shadow-sm border border-slate-100 grid grid-cols-2 md:grid-cols-4 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Countries Served</label>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Countries</label>
                                 <input type="text" id="statsCountries"
-                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
-                                    placeholder="e.g. 150+">
+                                    class="w-full px-4 py-2 border rounded-lg font-bold text-lg">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Happy Clients</label>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Clients</label>
                                 <input type="text" id="statsClients"
-                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
-                                    placeholder="e.g. 12K+">
+                                    class="w-full px-4 py-2 border rounded-lg font-bold text-lg">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">On-Time Delivery</label>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Success
+                                    Rate</label>
                                 <input type="text" id="statsDelivery"
-                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
-                                    placeholder="e.g. 99.2%">
+                                    class="w-full px-4 py-2 border rounded-lg font-bold text-lg">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Customer Support</label>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Support</label>
                                 <input type="text" id="statsSupport"
-                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
-                                    placeholder="e.g. 24/7">
+                                    class="w-full px-4 py-2 border rounded-lg font-bold text-lg">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab: Site Settings -->
+                    <div id="tab-contact" class="tab-content hidden space-y-8">
+                        <!-- Branding -->
+                        <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-100">
+                            <h3 class="text-lg font-bold mb-6 text-slate-900 border-b pb-2">Branding & Logo</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-700 mb-2">Site Logo
+                                        (URL)</label>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="siteLogo" class="flex-1 px-4 py-2 border rounded-lg">
+                                        <div class="relative">
+                                            <input type="file" class="hidden" onchange="uploadFile(this)">
+                                            <button onclick="triggerUpload(this)"
+                                                class="bg-slate-800 text-white p-2 rounded hover:bg-slate-700"><i
+                                                    class="fa-solid fa-upload"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-700 mb-2">Favicon (URL)</label>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="siteFavicon" class="flex-1 px-4 py-2 border rounded-lg">
+                                        <div class="relative">
+                                            <input type="file" class="hidden" onchange="uploadFile(this)">
+                                            <button onclick="triggerUpload(this)"
+                                                class="bg-slate-800 text-white p-2 rounded hover:bg-slate-700"><i
+                                                    class="fa-solid fa-upload"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact -->
+                        <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-100">
+                            <h3 class="text-lg font-bold mb-6 text-slate-900 border-b pb-2">Contact Information</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-semibold text-slate-700 mb-2">Office
+                                        Address</label>
+                                    <input type="text" id="contactAddress" class="w-full px-4 py-2 border rounded-lg">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-700 mb-2">Email Primary</label>
+                                    <input type="email" id="contactEmail1" class="w-full px-4 py-2 border rounded-lg">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-700 mb-2">Email
+                                        secondary</label>
+                                    <input type="email" id="contactEmail2" class="w-full px-4 py-2 border rounded-lg">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-700 mb-2">Phone Primary</label>
+                                    <input type="text" id="contactPhone1" class="w-full px-4 py-2 border rounded-lg">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-700 mb-2">Phone
+                                        Secondary</label>
+                                    <input type="text" id="contactPhone2" class="w-full px-4 py-2 border rounded-lg">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                                <div>
+                                    <label
+                                        class="block text-xs font-bold text-slate-500 uppercase mb-2">Facebook</label>
+                                    <input type="text" id="socialFacebook" class="w-full px-3 py-2 border rounded">
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-xs font-bold text-slate-500 uppercase mb-2">Twitter/X</label>
+                                    <input type="text" id="socialTwitter" class="w-full px-3 py-2 border rounded">
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-xs font-bold text-slate-500 uppercase mb-2">LinkedIn</label>
+                                    <input type="text" id="socialLinkedin" class="w-full px-3 py-2 border rounded">
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-xs font-bold text-slate-500 uppercase mb-2">Instagram</label>
+                                    <input type="text" id="socialInstagram" class="w-full px-3 py-2 border rounded">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Map -->
+                        <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-100">
+                            <h3 class="text-lg font-bold mb-2 text-slate-900">Google Maps Embed</h3>
+                            <p class="text-xs text-slate-500 mb-6">Paste the &lt;iframe&gt; code from Google Maps share
+                                options.</p>
+                            <textarea id="siteMap"
+                                class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none font-mono text-sm"
+                                rows="5"></textarea>
+                        </div>
+
+                        <!-- Admin Account -->
+                        <div class="bg-slate-900 p-8 rounded-xl shadow-2xl text-white">
+                            <h3 class="text-lg font-bold mb-6 border-b border-slate-800 pb-2">Admin Security</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-400 mb-2">Username</label>
+                                    <input type="text" id="adminUsername"
+                                        class="w-full px-4 py-2 bg-slate-800 border-none rounded-lg text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-400 mb-2">New Password</label>
+                                    <input type="password" id="adminPassword" placeholder="••••••••"
+                                        class="w-full px-4 py-2 bg-slate-800 border-none rounded-lg text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-400 mb-2">Confirm
+                                        Password</label>
+                                    <input type="password" id="adminConfirmPassword" placeholder="••••••••"
+                                        class="w-full px-4 py-2 bg-slate-800 border-none rounded-lg text-white">
+                                </div>
+                                <div class="md:col-start-3">
+                                    <button onclick="updateAdminSettings()"
+                                        class="w-full bg-yellow-500 text-slate-900 px-6 py-2 rounded-lg font-bold hover:bg-yellow-400 transition-colors shadow flex items-center justify-center gap-2">
+                                        <i class="fa-solid fa-key"></i> Update Credentials
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Tab: Security Settings -->
-                <div id="tab-security" class="tab-content hidden">
-                    <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200">
-                        <h2 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2 flex items-center gap-2">
-                            <i class="fa-solid fa-shield-halved text-yellow-500"></i> Admin Access Settings
-                        </h2>
-                        <div class="max-w-md space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Admin Username</label>
-                                <input type="text" id="adminUsername"
-                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">New Password</label>
-                                <input type="password" id="adminPassword"
-                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
-                                    placeholder="Enter new password">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Confirm New
-                                    Password</label>
-                                <input type="password" id="adminConfirmPassword"
-                                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
-                                    placeholder="Confirm new password">
-                            </div>
-                            <div class="pt-4">
-                                <button onclick="updateAdminSettings()"
-                                    class="bg-slate-900 text-white px-6 py-2 rounded-lg font-bold hover:bg-slate-800 transition-colors shadow flex items-center gap-2">
-                                    <i class="fa-solid fa-key"></i> Update Credentials
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </main>
     </div>
@@ -369,472 +310,212 @@
         let currentData = {};
         let csrfToken = '';
 
-        async function fetchCSRFToken() {
-            try {
-                const response = await fetch(CONFIG.API_BASE + 'api/csrf_token.php', {
-                    credentials: 'include'
-                });
-
-                const data = await response.json();
-                if (data.success) {
-                    csrfToken = data.csrf_token;
+        // --- Helper: Robust API Fetch ---
+        async function apiFetch(endpoint, options = {}) {
+            const url = CONFIG.API_BASE + endpoint;
+            const defaultOptions = {
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': csrfToken
                 }
-            } catch (error) {
-                console.error("Failed to fetch CSRF token:", error);
-            }
-        }
-
-        // Tab Switching Logic
-        function switchTab(tabId) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
-            // Show target tab
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-
-            // Update Sidebar Links
-            document.querySelectorAll('.tab-link').forEach(link => {
-                if (link.dataset.tab === tabId) {
-                    link.classList.add('bg-yellow-500', 'text-slate-900');
-                    link.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-slate-800');
-                } else {
-                    link.classList.remove('bg-yellow-500', 'text-slate-900');
-                    link.classList.add('text-slate-400', 'hover:text-white', 'hover:bg-slate-800');
-                }
-            });
-
-            // Update Title
-            const titles = {
-                'hero': 'Hero Slider',
-                'services': 'What We Offer',
-                'about': 'About Us',
-                'features': 'Why Choose Us',
-                'contact': 'Website Settings',
-                'stats': 'Business Growth Statistics'
             };
-            document.getElementById('currentTabTitle').textContent = titles[tabId];
-        }
 
-        // Image Upload Logic
-        function triggerUpload(btn) {
-            btn.parentElement.querySelector('input[type="file"]').click();
-        }
-
-        async function uploadFile(input) {
-            if (!input.files || input.files.length === 0) return;
-
-            const file = input.files[0];
-            const formData = new FormData();
-            formData.append('image', file);
-
-            const btn = input.parentElement.querySelector('button');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
-            btn.disabled = true;
+            const mergedOptions = { ...defaultOptions, ...options };
+            if (options.headers) mergedOptions.headers = { ...defaultOptions.headers, ...options.headers };
+            if (options.body instanceof FormData) delete mergedOptions.headers['Content-Type'];
 
             try {
-                const response = await fetch(CONFIG.API_BASE + 'api/upload.php', {
-                    method: 'POST',
-                    credentials: 'include',
-                    body: formData
-                });
-
+                const response = await fetch(url, mergedOptions);
+                const data = await response.json();
 
                 if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`Server returned ${response.status}: ${errorText}`);
-                }
-
-                const result = await response.json();
-                if (result.success) {
-                    const urlInput = input.parentElement.parentElement.querySelector('input[type="text"]');
-                    if (urlInput) {
-                        urlInput.value = result.filePath;
-                        if (urlInput.classList.contains('slide-img')) {
-                            updateSlidePreview(urlInput);
-                        }
+                    if (response.status === 401 && !url.includes('auth.php')) {
+                        window.location.href = 'index.html';
+                        return;
                     }
-                    showToast('Image uploaded successfully!');
-                } else {
-                    alert('Upload failed: ' + (result.error || 'Unknown error'));
+                    throw new Error(data.message || `HTTP error! status: ${response.status}`);
                 }
+                return data;
             } catch (error) {
-                console.error('Upload error:', error);
-                alert('Upload Error: ' + error.message);
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
+                console.error(`API Error (${endpoint}):`, error);
+                showToast(error.message, true);
+                throw error;
             }
         }
-
-        // Load Data
-        async function loadData() {
-            try {
-                const response = await fetch(CONFIG.API_BASE + 'api/content.php', {
-                    credentials: 'include'
-                });
-                currentData = await response.json();
-
-
-                // Populate Slides
-                const slidesContainer = document.getElementById('slidesContainer');
-                slidesContainer.innerHTML = '';
-                (currentData.heroSlides || []).forEach((slide, index) => {
-                    addSlideUI(slide, index);
-                });
-
-                // Populate Services
-                const servicesContainer = document.getElementById('servicesContainer');
-                servicesContainer.innerHTML = '';
-                (currentData.services || []).forEach((service, index) => {
-                    addServiceUI(service, index);
-                });
-
-                // Populate About
-                if (currentData.about) {
-                    document.getElementById('aboutWhoWeAre').value = currentData.about.whoWeAre || '';
-                    document.getElementById('aboutMission').value = currentData.about.mission || '';
-                    document.getElementById('aboutVision').value = currentData.about.vision || '';
-                }
-
-                // Populate Features
-                const featuresContainer = document.getElementById('featuresContainer');
-                featuresContainer.innerHTML = '';
-                (currentData.features || []).forEach((feature, index) => {
-                    addFeatureUI(feature, index);
-                });
-
-                // Populate Contact & Social
-                if (currentData.contact) {
-                    document.getElementById('contactAddress').value = currentData.contact.address || '';
-                    document.getElementById('contactPhone1').value = currentData.contact.phone1 || '';
-                    document.getElementById('contactPhone2').value = currentData.contact.phone2 || '';
-                    document.getElementById('contactEmail1').value = currentData.contact.email1 || '';
-                    document.getElementById('contactEmail2').value = currentData.contact.email2 || '';
-
-                    if (currentData.contact.social) {
-                        document.getElementById('socialFacebook').value = currentData.contact.social.facebook || '';
-                        document.getElementById('socialTwitter').value = currentData.contact.social.twitter || '';
-                        document.getElementById('socialLinkedin').value = currentData.contact.social.linkedin || '';
-                        document.getElementById('socialInstagram').value = currentData.contact.social.instagram || '';
-                    }
-                }
-
-                // Populate Website Settings
-                if (currentData.website) {
-                    document.getElementById('siteLogo').value = currentData.website.logo || '';
-                    document.getElementById('siteFavicon').value = currentData.website.favicon || '';
-                    document.getElementById('siteMap').value = currentData.website.mapEmbed || '';
-                }
-
-                // Populate Stats
-                if (currentData.stats) {
-                    document.getElementById('statsCountries').value = currentData.stats.countries || '';
-                    document.getElementById('statsClients').value = currentData.stats.clients || '';
-                    document.getElementById('statsDelivery').value = currentData.stats.delivery || '';
-                    document.getElementById('statsSupport').value = currentData.stats.support || '';
-                }
-
-            } catch (error) {
-                console.error('Error loading data:', error);
-                showToast('Error loading data', true);
-            }
-        }
-
-        // --- UI Addition Functions ---
-
-        function addSlideUI(slide = {}, index) {
-            const container = document.getElementById('slidesContainer');
-            const div = document.createElement('div');
-            div.className = "p-4 border border-slate-100 rounded-lg bg-slate-50 relative group slide-item";
-            let bgPath = slide.backgroundImage || '';
-            if (bgPath && !bgPath.startsWith('http') && !bgPath.startsWith('/')) {
-                bgPath = API_BASE + bgPath;
-            }
-
-            div.innerHTML = `
-                <button onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <i class="fa-solid fa-trash-can"></i>
-                </button>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="space-y-3">
-                        <input type="text" placeholder="Subtitle" class="slide-subtitle w-full px-3 py-1.5 border rounded" value="${slide.subtitle || ''}">
-                        <input type="text" placeholder="Title Line 1" class="slide-title1 w-full px-3 py-1.5 border rounded" value="${slide.titleLine1 || ''}">
-                        <input type="text" placeholder="Title Highlight" class="slide-highlight w-full px-3 py-1.5 border rounded" value="${slide.titleHighlight || ''}">
-                        <textarea placeholder="Description" class="slide-desc w-full px-3 py-1.5 border rounded" rows="2">${slide.description || ''}</textarea>
-                    </div>
-                    <div class="space-y-3">
-                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Background Image</label>
-                        <div class="flex gap-2">
-                            <input type="text" placeholder="Background Image URL" class="slide-img flex-1 px-3 py-1.5 border rounded" value="${slide.backgroundImage || ''}" oninput="updateSlidePreview(this)">
-                            <div class="relative">
-                                <input type="file" class="hidden" accept="image/*" onchange="uploadFile(this)">
-                                <button onclick="triggerUpload(this)" class="bg-slate-800 text-white px-3 py-1.5 rounded hover:bg-slate-700 transition-colors text-sm">
-                                    <i class="fa-solid fa-upload"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <p class="text-[10px] text-slate-400 italic">Recommended: 1920x1080px (16:9) | Max: 2MB</p>
-                        <div class="h-32 bg-slate-200 rounded bg-cover bg-center border border-slate-300 slide-preview" style="background-image: url('${bgPath}')"></div>
-                    </div>
-                </div>
-            `;
-            container.appendChild(div);
-        }
-
-        function addServiceUI(service = {}, index) {
-            const container = document.getElementById('servicesContainer');
-            const div = document.createElement('div');
-            div.className = "p-4 border border-slate-100 rounded-lg bg-slate-50 relative group service-item";
-            div.innerHTML = `
-                <button onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <i class="fa-solid fa-trash-can"></i>
-                </button>
-                <div class="flex gap-3 mb-2">
-                    <div class="w-12 h-12 bg-white flex items-center justify-center rounded border text-yellow-500 text-xl service-icon-preview">
-                        <i class="fa-solid ${service.icon || 'fa-box'}"></i>
-                    </div>
-                    <div class="flex-1">
-                        <input type="text" placeholder="Icon Class (fa-ship, etc)" class="service-icon w-full px-3 py-1 border rounded text-xs mb-1" value="${service.icon || ''}" oninput="updateServiceIcon(this)">
-                        <input type="text" placeholder="Service Title" class="service-title w-full px-3 py-1 border rounded font-bold" value="${service.title || ''}">
-                    </div>
-                </div>
-                <textarea placeholder="Description" class="service-desc w-full px-3 py-1 border rounded text-sm" rows="2">${service.description || ''}</textarea>
-            `;
-            container.appendChild(div);
-        }
-
-        function addFeatureUI(feature = {}, index) {
-            const container = document.getElementById('featuresContainer');
-            const div = document.createElement('div');
-            div.className = "p-4 border border-slate-100 rounded-lg bg-slate-50 relative group feature-item";
-            div.innerHTML = `
-                <button onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <i class="fa-solid fa-trash-can"></i>
-                </button>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="flex gap-2 items-center">
-                         <div class="w-10 h-10 bg-white flex items-center justify-center rounded border text-yellow-500 feature-icon-preview"><i class="fa-solid ${feature.icon || 'fa-check'}"></i></div>
-                         <input type="text" placeholder="Icon Class" class="feature-icon flex-1 px-3 py-1.5 border rounded text-xs" value="${feature.icon || ''}" oninput="updateFeatureIcon(this)">
-                    </div>
-                    <input type="text" placeholder="Feature Title" class="feature-title w-full px-3 py-1.5 border rounded" value="${feature.title || ''}">
-                    <textarea placeholder="Description" class="feature-desc w-full px-3 py-1.5 border rounded" rows="1">${feature.description || ''}</textarea>
-                </div>
-            `;
-            container.appendChild(div);
-        }
-
-        // --- Interaction Handlers ---
-
-        function addSlide() { addSlideUI(); }
-        function addService() { addServiceUI(); }
-        function addFeature() { addFeatureUI(); }
-
-        function updateSlidePreview(input) {
-            const container = input.closest('.space-y-3');
-            const preview = container.querySelector('.slide-preview');
-            if (preview) {
-                let path = input.value;
-                if (path && !path.startsWith('http') && !path.startsWith('/')) {
-                    path = API_BASE + path;
-                }
-                preview.style.backgroundImage = `url('${path}')`;
-
-            }
-        }
-
-        function updateServiceIcon(input) {
-            const preview = input.closest('.service-item').querySelector('.service-icon-preview i');
-            preview.className = `fa-solid ${input.value || 'fa-box'}`;
-        }
-
-        function updateFeatureIcon(input) {
-            const preview = input.closest('.feature-item').querySelector('.feature-icon-preview i');
-            preview.className = `fa-solid ${input.value || 'fa-check'}`;
-        }
-
-        // Save Data
-        async function saveData() {
-            // Collect Slides
-            const heroSlides = [];
-            document.querySelectorAll('.slide-item').forEach(el => {
-                heroSlides.push({
-                    subtitle: el.querySelector('.slide-subtitle').value,
-                    titleLine1: el.querySelector('.slide-title1').value,
-                    titleHighlight: el.querySelector('.slide-highlight').value,
-                    description: el.querySelector('.slide-desc').value,
-                    backgroundImage: el.querySelector('.slide-img').value
-                });
-            });
-
-            // Collect Services
-            const services = [];
-            document.querySelectorAll('.service-item').forEach(el => {
-                services.push({
-                    icon: el.querySelector('.service-icon').value,
-                    title: el.querySelector('.service-title').value,
-                    description: el.querySelector('.service-desc').value
-                });
-            });
-
-            // Collect Features
-            const features = [];
-            document.querySelectorAll('.feature-item').forEach(el => {
-                features.push({
-                    icon: el.querySelector('.feature-icon').value,
-                    title: el.querySelector('.feature-title').value,
-                    description: el.querySelector('.feature-desc').value
-                });
-            });
-
-            // Build new currentData
-            const newData = {
-                heroSlides: heroSlides,
-                services: services,
-                about: {
-                    whoWeAre: document.getElementById('aboutWhoWeAre').value,
-                    mission: document.getElementById('aboutMission').value,
-                    vision: document.getElementById('aboutVision').value
-                },
-                features: features,
-                stats: {
-                    countries: document.getElementById('statsCountries').value,
-                    clients: document.getElementById('statsClients').value,
-                    delivery: document.getElementById('statsDelivery').value,
-                    support: document.getElementById('statsSupport').value
-                },
-                contact: {
-                    address: document.getElementById('contactAddress').value,
-                    phone1: document.getElementById('contactPhone1').value,
-                    phone2: document.getElementById('contactPhone2').value,
-                    email1: document.getElementById('contactEmail1').value,
-                    email2: document.getElementById('contactEmail2').value,
-                    social: {
-                        facebook: document.getElementById('socialFacebook').value,
-                        twitter: document.getElementById('socialTwitter').value,
-                        linkedin: document.getElementById('socialLinkedin').value,
-                        instagram: document.getElementById('socialInstagram').value
-                    }
-                },
-                website: {
-                    logo: document.getElementById('siteLogo').value,
-                    favicon: document.getElementById('siteFavicon').value,
-                    mapEmbed: document.getElementById('siteMap').value
-                }
-            };
-
-            try {
-                const response = await fetch(CONFIG.API_BASE + 'api/content.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-Token': csrfToken
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify(newData)
-                });
-
-
-                const result = await response.json();
-                if (result.success) {
-                    showToast('Changes saved successfully!');
-                    currentData = newData;
-                } else {
-                    showToast('Failed to save changes', true);
-                }
-            } catch (error) {
-                console.error('Error saving data:', error);
-                showToast('Error saving data', true);
-            }
-        }
-
-        // --- Utils ---
 
         function showToast(message, isError = false) {
             const toast = document.getElementById('toast');
-            document.getElementById('toastMessage').textContent = message;
-            toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 z-50 ${isError ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`;
-            setTimeout(() => toast.classList.remove('translate-y-20', 'opacity-0'), 10);
-            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
+            const msg = document.getElementById('toastMessage');
+            msg.textContent = message;
+            toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 z-50 ${isError ? 'bg-red-600' : 'bg-green-600'} text-white translate-y-0 opacity-100`;
+            setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 4000);
         }
 
-        // Event Listeners
-        document.getElementById('logoutBtn').addEventListener('click', async () => {
-            await fetch(CONFIG.API_BASE + 'api/logout.php', {
-                credentials: 'include'
-            });
-            window.location.href = 'index.html';
-        });
+        async function fetchCSRFToken() {
+            const data = await apiFetch('api/csrf_token.php');
+            if (data && data.success) csrfToken = data.csrf_token;
+        }
 
-        document.getElementById('saveBtn').addEventListener('click', saveData);
-
-        // Admin Settings Logic
-        async function loadAdminSettings() {
-            try {
-                const response = await fetch(CONFIG.API_BASE + 'api/admin_settings.php', {
-                    credentials: 'include'
-                });
-                if (response.status === 401) {
-                    window.location.href = 'index.html'; // Kick unauthorized user
-                    return;
+        // --- Navigation ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            document.querySelectorAll('.tab-link').forEach(link => {
+                if (link.dataset.tab === tabId) {
+                    link.className = "tab-link flex items-center gap-3 px-4 py-3 rounded-lg transition-all bg-yellow-500 text-slate-900 font-medium";
+                } else {
+                    link.className = "tab-link flex items-center gap-3 px-4 py-3 rounded-lg transition-all hover:bg-slate-800 hover:text-white text-slate-400";
                 }
-                const data = await response.json();
+            });
+            const titles = { 'hero': 'Hero Slider', 'services': 'What We Offer', 'about': 'About Us', 'features': 'Why Us', 'stats': 'Statistics', 'contact': 'Site Settings' };
+            document.getElementById('currentTabTitle').textContent = titles[tabId];
+        }
 
-                document.getElementById('adminUsername').value = data.username || '';
-            } catch (error) {
-                console.error('Error loading admin settings:', error);
-            }
+        // --- File Upload ---
+        function triggerUpload(btn) { btn.parentElement.querySelector('input[type="file"]').click(); }
+        async function uploadFile(input) {
+            if (!input.files?.length) return;
+            const formData = new FormData();
+            formData.append('image', input.files[0]);
+            const btn = input.parentElement.querySelector('button') || input.closest('.relative').querySelector('button');
+            const original = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+
+            try {
+                const res = await apiFetch('api/upload.php', { method: 'POST', body: formData });
+                if (res.success) {
+                    const urlBox = input.closest('.flex').querySelector('input[type="text"]');
+                    if (urlBox) { urlBox.value = res.filePath; urlBox.dispatchEvent(new Event('input')); }
+                    const preview = input.closest('.space-y-3')?.querySelector('.slide-preview');
+                    if (preview) preview.style.backgroundImage = `url('${CONFIG.API_BASE}${res.filePath}')`;
+                    showToast('Uploaded!');
+                }
+            } catch (e) { } finally { btn.innerHTML = original; btn.disabled = false; input.value = ''; }
+        }
+
+        // --- Rendering ---
+        function updateSlidePreview(input) {
+            const preview = input.closest('.space-y-3')?.querySelector('.slide-preview');
+            if (preview) preview.style.backgroundImage = `url('${input.value.startsWith('http') ? input.value : CONFIG.API_BASE + input.value}')`;
+        }
+
+        function addHeroSlideUI(slide = {}) {
+            const container = document.getElementById('heroSlidesContainer');
+            const bgPath = slide.backgroundImage ? (slide.backgroundImage.startsWith('http') ? slide.backgroundImage : CONFIG.API_BASE + slide.backgroundImage) : '';
+            const div = document.createElement('div');
+            div.className = "bg-white p-6 rounded-xl shadow-sm border border-slate-100 relative group hero-slide-item";
+            div.innerHTML = `
+                <button onclick="this.parentElement.remove()" class="absolute top-4 right-4 text-slate-300 hover:text-red-500 transition-colors"><i class="fa-solid fa-trash-can"></i></button>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <input type="text" placeholder="Subtitle" class="slide-subtitle w-full px-4 py-2 border rounded-lg" value="${slide.subtitle || ''}">
+                        <input type="text" placeholder="Title Line 1" class="slide-t1 w-full px-4 py-2 border rounded-lg font-bold" value="${slide.titleLine1 || ''}">
+                        <input type="text" placeholder="Highlight" class="slide-th w-full px-4 py-2 border rounded-lg text-yellow-600 font-bold" value="${slide.titleHighlight || ''}">
+                        <textarea placeholder="Description" class="slide-desc w-full px-4 py-2 border rounded-lg h-24" rows="3">${slide.description || ''}</textarea>
+                    </div>
+                    <div class="space-y-3">
+                        <label class="block text-xs font-bold text-slate-500 uppercase">Background Image</label>
+                        <div class="flex gap-2">
+                            <input type="text" placeholder="URL" class="slide-img flex-1 px-4 py-2 border rounded-lg" value="${slide.backgroundImage || ''}" oninput="updateSlidePreview(this)">
+                            <div class="relative"><input type="file" class="hidden" onchange="uploadFile(this)"><button onclick="triggerUpload(this)" class="bg-slate-800 text-white p-2 rounded"><i class="fa-solid fa-upload"></i></button></div>
+                        </div>
+                        <div class="h-32 bg-slate-100 rounded bg-cover bg-center border slide-preview" style="background-image: url('${bgPath}')"></div>
+                    </div>
+                </div>`;
+            container.appendChild(div);
+        }
+
+        function addServiceUI(s = {}) {
+            const div = document.createElement('div');
+            div.className = "p-4 border rounded-lg bg-white relative group service-item";
+            div.innerHTML = `<button onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-slate-300 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>
+                <div class="flex gap-4">
+                    <div class="w-12 h-12 bg-slate-50 flex items-center justify-center rounded border text-yellow-500 text-xl"><i class="fa-solid ${s.icon || 'fa-box'}"></i></div>
+                    <div class="flex-1 space-y-2">
+                        <input type="text" placeholder="Icon (fa-box)" class="service-icon w-full px-3 py-1 border rounded text-xs" value="${s.icon || ''}">
+                        <input type="text" placeholder="Title" class="service-title w-full px-3 py-1 border rounded font-bold" value="${s.title || ''}">
+                        <textarea placeholder="Description" class="service-desc w-full px-3 py-1 border rounded text-sm" rows="2">${s.description || ''}</textarea>
+                    </div>
+                </div>`;
+            document.getElementById('servicesContainer').appendChild(div);
+        }
+
+        function addFeatureUI(f = {}) {
+            const div = document.createElement('div');
+            div.className = "p-4 border rounded-lg bg-white relative group feature-item";
+            div.innerHTML = `<button onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-slate-300 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <input type="text" placeholder="Icon" class="feature-icon px-3 py-1 border rounded" value="${f.icon || ''}">
+                    <input type="text" placeholder="Title" class="feature-title px-3 py-1 border rounded font-bold" value="${f.title || ''}">
+                    <input type="text" placeholder="Description" class="feature-desc px-3 py-1 border rounded" value="${f.description || ''}">
+                </div>`;
+            document.getElementById('featuresContainer').appendChild(div);
+        }
+
+        function renderAll() {
+            document.getElementById('heroSlidesContainer').innerHTML = '';
+            document.getElementById('servicesContainer').innerHTML = '';
+            document.getElementById('featuresContainer').innerHTML = '';
+            currentData.heroSlides?.forEach(s => addHeroSlideUI(s));
+            currentData.services?.forEach(s => addServiceUI(s));
+            currentData.features?.forEach(f => addFeatureUI(f));
+            document.getElementById('aboutWhoWeAre').value = currentData.about?.whoWeAre || '';
+            document.getElementById('aboutMission').value = currentData.about?.mission || '';
+            document.getElementById('aboutVision').value = currentData.about?.vision || '';
+            document.getElementById('statsCountries').value = currentData.stats?.countries || '';
+            document.getElementById('statsClients').value = currentData.stats?.clients || '';
+            document.getElementById('statsDelivery').value = currentData.stats?.delivery || '';
+            document.getElementById('statsSupport').value = currentData.stats?.support || '';
+            document.getElementById('contactAddress').value = currentData.contact?.address || '';
+            document.getElementById('contactEmail1').value = currentData.contact?.email1 || '';
+            document.getElementById('contactEmail2').value = currentData.contact?.email2 || '';
+            document.getElementById('contactPhone1').value = currentData.contact?.phone1 || '';
+            document.getElementById('contactPhone2').value = currentData.contact?.phone2 || '';
+            document.getElementById('socialFacebook').value = currentData.contact?.social?.facebook || '';
+            document.getElementById('socialTwitter').value = currentData.contact?.social?.twitter || '';
+            document.getElementById('socialLinkedin').value = currentData.contact?.social?.linkedin || '';
+            document.getElementById('socialInstagram').value = currentData.contact?.social?.instagram || '';
+            document.getElementById('siteLogo').value = currentData.website?.logo || '';
+            document.getElementById('siteFavicon').value = currentData.website?.favicon || '';
+            document.getElementById('siteMap').value = currentData.website?.mapEmbed || '';
+        }
+
+        function syncDataFromUI() {
+            const getVal = (id) => document.getElementById(id).value;
+            currentData.about = { whoWeAre: getVal('aboutWhoWeAre'), mission: getVal('aboutMission'), vision: getVal('aboutVision') };
+            currentData.stats = { countries: getVal('statsCountries'), clients: getVal('statsClients'), delivery: getVal('statsDelivery'), support: getVal('statsSupport') };
+            currentData.contact = { address: getVal('contactAddress'), email1: getVal('contactEmail1'), email2: getVal('contactEmail2'), phone1: getVal('contactPhone1'), phone2: getVal('contactPhone2'), social: { facebook: getVal('socialFacebook'), twitter: getVal('socialTwitter'), linkedin: getVal('socialLinkedin'), instagram: getVal('socialInstagram') } };
+            currentData.website = { logo: getVal('siteLogo'), favicon: getVal('siteFavicon'), mapEmbed: getVal('siteMap') };
+            currentData.heroSlides = [...document.querySelectorAll('.hero-slide-item')].map(el => ({ subtitle: el.querySelector('.slide-subtitle').value, titleLine1: el.querySelector('.slide-t1').value, titleHighlight: el.querySelector('.slide-th').value, description: el.querySelector('.slide-desc').value, backgroundImage: el.querySelector('.slide-img').value }));
+            currentData.services = [...document.querySelectorAll('.service-item')].map(el => ({ icon: el.querySelector('.service-icon').value, title: el.querySelector('.service-title').value, description: el.querySelector('.service-desc').value }));
+            currentData.features = [...document.querySelectorAll('.feature-item')].map(el => ({ icon: el.querySelector('.feature-icon').value, title: el.querySelector('.feature-title').value, description: el.querySelector('.feature-desc').value }));
+        }
+
+        async function saveData() {
+            const btn = document.getElementById('saveBtn');
+            const original = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
+            syncDataFromUI();
+            try { await apiFetch('api/content.php', { method: 'POST', body: JSON.stringify(currentData) }); showToast('Saved successfully!'); } catch (e) { } finally { btn.innerHTML = original; btn.disabled = false; }
         }
 
         async function updateAdminSettings() {
-            const username = document.getElementById('adminUsername').value;
-            const password = document.getElementById('adminPassword').value;
-            const confirm = document.getElementById('adminConfirmPassword').value;
-
-            if (!username || !password) {
-                showToast('Username and password are required!', true);
-                return;
-            }
-
-            if (password !== confirm) {
-                showToast('Passwords do not match!', true);
-                return;
-            }
-
-            try {
-                const response = await fetch(CONFIG.API_BASE + 'api/admin_settings.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-Token': csrfToken
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({
-                        username: username,
-                        password: password
-                    })
-                });
-
-
-                const result = await response.json();
-                if (result.success) {
-                    showToast('Admin credentials updated successfully!');
-                    document.getElementById('adminPassword').value = '';
-                    document.getElementById('adminConfirmPassword').value = '';
-                } else {
-                    showToast('Failed to update credentials!', true);
-                }
-            } catch (error) {
-                console.error('Error updating admin settings:', error);
-                showToast('Server error occurred!', true);
-            }
+            const u = document.getElementById('adminUsername').value, p = document.getElementById('adminPassword').value, c = document.getElementById('adminConfirmPassword').value;
+            if (!u) return showToast('Username required!', true);
+            if (p && p !== c) return showToast('Passwords mismatch!', true);
+            try { await apiFetch('api/admin_settings.php', { method: 'POST', body: JSON.stringify({ username: u, password: p }) }); showToast('Settings updated!'); document.getElementById('adminPassword').value = ''; document.getElementById('adminConfirmPassword').value = ''; } catch (e) { }
         }
 
-        // Init
-        (async () => {
-            await fetchCSRFToken();
-            await loadAdminSettings(); // Trigger fast redirect if unauthorised
-            loadData();
-        })();
+        async function loadData() { try { currentData = await apiFetch('api/content.php'); renderAll(); } catch (e) { } }
+        async function loadAdminSettings() { const d = await apiFetch('api/admin_settings.php'); if (d) document.getElementById('adminUsername').value = d.username || ''; }
+
+        document.getElementById('logoutBtn').addEventListener('click', async () => { await apiFetch('api/auth.php?action=logout'); window.location.href = 'index.html'; });
+        document.getElementById('saveBtn').addEventListener('click', saveData);
+
+        (async () => { await fetchCSRFToken(); await loadData(); await loadAdminSettings(); })();
     </script>
 </body>
 
