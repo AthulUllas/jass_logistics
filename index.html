@@ -18,6 +18,18 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <script>
+        // Block Localhost Access
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            document.documentElement.innerHTML = `
+            <body style="background:#0f172a; color:white; font-family:sans-serif; height:100vh; display:flex; align-items:center; justify-content:center; text-align:center;">
+                <div>
+                    <h1 style="font-size:3rem; color:#eab308;">Access Restricted</h1>
+                    <p style="font-size:1.2rem; color:#94a3b8;">This website is unavailable on localhost by administrator policy.</p>
+                </div>
+            </body>`;
+        }
+    </script>
     <!-- Google Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap"

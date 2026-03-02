@@ -25,6 +25,14 @@ function loadEnv($path) {
 }
 loadEnv(__DIR__ . '/../.env');
 
+// BLOCK LOCALHOST ACCESS
+$host = $_SERVER['HTTP_HOST'] ?? '';
+if (strpos($host, 'localhost') !== false || $host === '127.0.0.1') {
+    http_response_code(403);
+    die(json_encode(['success' => false, 'message' => 'Access Restricted: This application is not available on localhost.']));
+}
+
+
 // 2. Load Config & Logger
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/Logger.php';
