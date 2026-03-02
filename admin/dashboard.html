@@ -374,7 +374,9 @@
 
         async function fetchCSRFToken() {
             try {
-                const response = await fetch(CONFIG.API_BASE + 'api/csrf_token.php');
+                const response = await fetch(CONFIG.API_BASE + 'api/csrf_token.php', {
+                    credentials: 'include'
+                });
 
                 const data = await response.json();
                 if (data.success) {
@@ -435,6 +437,7 @@
             try {
                 const response = await fetch(CONFIG.API_BASE + 'api/upload.php', {
                     method: 'POST',
+                    credentials: 'include',
                     body: formData
                 });
 
@@ -469,7 +472,9 @@
         // Load Data
         async function loadData() {
             try {
-                const response = await fetch(CONFIG.API_BASE + 'api/content.php');
+                const response = await fetch(CONFIG.API_BASE + 'api/content.php', {
+                    credentials: 'include'
+                });
                 currentData = await response.json();
 
 
@@ -727,6 +732,7 @@
                         'Content-Type': 'application/json',
                         'X-CSRF-Token': csrfToken
                     },
+                    credentials: 'include',
                     body: JSON.stringify(newData)
                 });
 

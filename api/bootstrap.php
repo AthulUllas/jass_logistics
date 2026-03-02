@@ -56,7 +56,7 @@ session_set_cookie_params([
     'domain' => $domain,
     'secure' => true, 
     'httponly' => true,
-    'samesite' => 'Lax' // Use 'None' if frontend is on a different root domain but requires cookies
+    'samesite' => 'None' // Required for cross-domain cookies (Vercel -> Hostinger)
 ]);
 
 if (session_status() === PHP_SESSION_NONE) {
