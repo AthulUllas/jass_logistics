@@ -8,10 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
-        // Check Auth
-        if (!localStorage.getItem('adminToken')) {
-            window.location.href = 'index.html';
-        }
+        // Auth is now managed via secure session cookies in bootstrap.php
     </script>
 </head>
 
@@ -762,7 +759,9 @@
 
         // Event Listeners
         document.getElementById('logoutBtn').addEventListener('click', async () => {
-            await fetch('../api/logout.php');
+            await fetch(CONFIG.API_BASE + 'api/logout.php', {
+                credentials: 'include'
+            });
             window.location.href = 'index.html';
         });
 
@@ -771,9 +770,11 @@
         // Admin Settings Logic
         async function loadAdminSettings() {
             try {
-                const response = await fetch('../api/admin_settings.php');
+                const response = await fetch(CONFIG.API_BASE + 'api/admin_settings.php', {
+                    credentials: 'include'
+                });
                 if (response.status === 401) {
-                    window.location.href = 'index.html'; // Kick unsigned user
+                    window.location.href = 'index.html'; // Kick unauthorized user
                     return;
                 }
                 const data = await response.json();
@@ -800,13 +801,17 @@
             }
 
             try {
-                const response = await fetch('../api/admin_settings.php', {
+                const response = await fetch(CONFIG.API_BASE + 'api/admin_settings.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-Token': csrfToken
                     },
-                    body: JSON.stringify({ username, password })
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
                 });
 
 
